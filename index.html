@@ -14,16 +14,60 @@
             img.loading = 'lazy';
         });
         
-        console.log('Otimizações de performance aplicadas');
-    }
+    console.log('Otimizações de performance aplicadas');
+  }
+  
+  // Função para gerenciar o YouTube
+  function manageYouTube() {
+    const iframe = document.querySelector('iframe[src*="youtube.com"]');
+    const fallback = document.getElementById('youtube-fallback');
     
-    // Inicializar otimizações quando o DOM estiver pronto
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', optimizePagePerformance);
-    } else {
-        optimizePagePerformance();
+    if (iframe && fallback) {
+      console.log('Gerenciando YouTube iframe...');
+      
+      // Esconder fallback quando o iframe carregar
+      iframe.addEventListener('load', function() {
+        console.log('YouTube iframe carregado com sucesso');
+        fallback.classList.add('hidden');
+        fallback.style.display = 'none';
+      });
+      
+      // Mostrar fallback se o iframe falhar
+      iframe.addEventListener('error', function() {
+        console.log('Erro ao carregar YouTube iframe');
+        fallback.classList.remove('hidden');
+        fallback.style.display = 'flex';
+      });
+      
+      // Verificar se o iframe está carregando
+      if (iframe.contentDocument || iframe.contentWindow) {
+        console.log('YouTube iframe já carregado');
+        fallback.classList.add('hidden');
+        fallback.style.display = 'none';
+      }
+      
+      // Timeout para esconder fallback após 3 segundos
+      setTimeout(() => {
+        if (fallback && !fallback.classList.contains('hidden')) {
+          console.log('Timeout: escondendo fallback');
+          fallback.classList.add('hidden');
+          fallback.style.display = 'none';
+        }
+      }, 3000);
     }
-    
+  }
+  
+  // Inicializar otimizações quando o DOM estiver pronto
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function() {
+      optimizePagePerformance();
+      manageYouTube();
+    });
+  } else {
+    optimizePagePerformance();
+    manageYouTube();
+  }
+  
 })();
 </script>
 <style id="__jsx-3243365948">html{font-family:'Lato', 'Lato Fallback', arial,'Montserrat', 'Montserrat Fallback', arial}</style>
@@ -207,6 +251,29 @@ if (document.readyState === 'loading') {
 <style id="__jsx-3243365948">html{font-family:'Lato', 'Lato Fallback', arial,'Montserrat', 'Montserrat Fallback', arial}</style>
 <style>
 /* CSS para otimização da página */
+
+/* Garantir que o iframe do YouTube seja exibido corretamente */
+figure.image_resized iframe[src*="youtube.com"] {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  z-index: 10 !important;
+}
+
+/* Garantir que o container do vídeo seja visível */
+figure.image_resized {
+  display: block !important;
+  position: relative !important;
+}
+
+/* Esconder fallback quando o iframe carregar */
+#youtube-fallback {
+  transition: opacity 0.3s ease;
+}
+
+#youtube-fallback.hidden {
+  display: none !important;
+}
 </style><style data-styled="" data-styled-version="5.3.11">.gduZIE{width:100%;padding-right:15px;padding-left:15px;margin-right:auto;margin-left:auto;}/*!sc*/
 @media (min-width:576px){.gduZIE{max-width:540px;}}/*!sc*/
 @media (min-width:768px){.gduZIE{max-width:720px;}}/*!sc*/
@@ -1062,8 +1129,6 @@ data-styled.g530[id="sc-d7b38ab6-6"]{content:"joNfNJ,jMkzlc,"}/*!sc*/
 
 <h1>A Realidade em Moçambique</h1>
 
-<figure class="image image_resized"></figure>
-
 <p>Enquanto você lê este texto, milhares de crianças em Moçambique enfrentam uma dor que não se pode descrever. Elas estão com fome, doentes, enfraquecidas, e muitas delas mal conseguem levantar da cama. A desnutrição grave, a falta de alimentos, de medicamentos e de tratamentos básicos está tirando a vida de inocentes todos os dias.</p>
 
 <p>Algumas dessas crianças têm apenas a pele e os ossos, choram por comida que não chega, ou lutam contra infecções graves sem nenhum tipo de medicamento ou curativo. É uma dor silenciosa, longe das câmeras, mas que não pode mais ser ignorada.</p>
@@ -1090,14 +1155,22 @@ data-styled.g530[id="sc-d7b38ab6-6"]{content:"joNfNJ,jMkzlc,"}/*!sc*/
 <p>Mesmo a quilômetros de distância, sua compaixão pode alcançar o coração de uma criança faminta. Cada doação, cada compartilhamento, cada oração — tudo conta.</p>
 
 <figure class="image image_resized">
-  <div style="position: relative; width: 100%; height: 0; padding-bottom: 56.25%;">
+  <div style="position: relative; width: 100%; height: 0; padding-bottom: 56.25%; background: #000;">
     <iframe 
-      src="https://www.youtube.com/embed/StD99BVc1Mg?autoplay=1&mute=1&loop=1&playlist=StD99BVc1Mg&controls=0&showinfo=0&rel=0&modestbranding=1&iv_load_policy=3&fs=0&disablekb=1&cc_load_policy=0&start=0&end=0" 
-      style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;"
+      src="https://www.youtube.com/embed/StD99BVc1Mg?autoplay=1&mute=1&loop=1&playlist=StD99BVc1Mg&controls=1&showinfo=0&rel=0&modestbranding=1&fs=1&disablekb=0&cc_load_policy=0" 
+      style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; z-index: 10;"
       frameborder="0" 
-      allow="autoplay; encrypted-media" 
-      allowfullscreen>
+      allow="autoplay; encrypted-media; fullscreen" 
+      allowfullscreen
+      title="Vídeo sobre a realidade em Moçambique">
     </iframe>
+    <!-- Fallback caso o YouTube não carregue -->
+    <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #000; display: flex; align-items: center; justify-content: center; color: white; z-index: 5;" id="youtube-fallback">
+      <div style="text-align: center;">
+        <h3>Carregando vídeo...</h3>
+        <p>Se o vídeo não carregar, <a href="https://www.youtube.com/watch?v=StD99BVc1Mg" target="_blank" style="color: #24CA68;">clique aqui para assistir no YouTube</a></p>
+      </div>
+    </div>
   </div>
 </figure>
 
