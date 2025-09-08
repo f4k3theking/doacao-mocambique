@@ -55,17 +55,116 @@
       }
     });
   }
+
+  // Função para proteger o vídeo do YouTube contra substituição
+  function protectYouTubeVideo() {
+    console.log('Protegendo vídeo do YouTube contra substituição...');
+    
+    // Observar mudanças no DOM que possam substituir o vídeo
+    const observer = new MutationObserver(function(mutations) {
+      mutations.forEach(function(mutation) {
+        if (mutation.type === 'childList') {
+          // Verificar se algum iframe do YouTube foi removido
+          const currentIframes = document.querySelectorAll('iframe[src*="youtube.com"]');
+          if (currentIframes.length === 0) {
+            console.log('Detectada remoção do iframe do YouTube, restaurando...');
+            restoreYouTubeVideo();
+          }
+        }
+      });
+    });
+    
+    // Observar mudanças no container principal
+    const mainContainer = document.querySelector('.sc-f02dafb3-1.gdoSnV') || 
+                         document.querySelector('figure[class*="sc-80ea7b36-3"]') ||
+                         document.querySelector('figure.image_resized');
+    
+    if (mainContainer) {
+      observer.observe(mainContainer, {
+        childList: true,
+        subtree: true
+      });
+      console.log('Observador de mutação ativado para proteger vídeo');
+    }
+  }
+
+  // Função para restaurar o vídeo do YouTube
+  function restoreYouTubeVideo() {
+    console.log('Restaurando vídeo do YouTube...');
+    
+    // Encontrar o container principal
+    const mainContainer = document.querySelector('.sc-f02dafb3-1.gdoSnV') || 
+                         document.querySelector('figure[class*="sc-80ea7b36-3"]') ||
+                         document.querySelector('figure.image_resized');
+    
+    if (mainContainer) {
+      // Verificar se já existe um iframe do YouTube
+      const existingIframe = mainContainer.querySelector('iframe[src*="youtube.com"]');
+      if (!existingIframe) {
+        // Criar novo iframe do YouTube
+        const youtubeHTML = `
+          <div style="position: relative; width: 100%; height: 0; padding-bottom: 56.25%; background: #000;">
+            <iframe 
+              src="https://www.youtube.com/embed/StD99BVc1Mg?autoplay=1&mute=1&loop=1&playlist=StD99BVc1Mg&controls=1&showinfo=0&rel=0&modestbranding=1&fs=1&disablekb=0&cc_load_policy=0" 
+              style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; z-index: 10;"
+              frameborder="0" 
+              allow="autoplay; encrypted-media; fullscreen" 
+              allowfullscreen
+              title="Vídeo sobre a realidade em Moçambique">
+            </iframe>
+            <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #000; display: flex; align-items: center; justify-content: center; color: white; z-index: 5;" id="youtube-fallback-restored">
+              <div style="text-align: center;">
+                <h3>Carregando vídeo...</h3>
+                <p>Se o vídeo não carregar, <a href="https://www.youtube.com/watch?v=StD99BVc1Mg" target="_blank" style="color: #24CA68;">clique aqui para assistir no YouTube</a></p>
+              </div>
+            </div>
+          </div>
+        `;
+        
+        mainContainer.innerHTML = youtubeHTML;
+        console.log('Vídeo do YouTube restaurado com sucesso');
+        
+        // Reaplicar gerenciamento
+        setTimeout(() => {
+          manageYouTube();
+        }, 100);
+      }
+    }
+  }
   
   // Inicializar otimizações quando o DOM estiver pronto
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', function() {
       optimizePagePerformance();
       manageYouTube();
+      protectYouTubeVideo();
     });
   } else {
     optimizePagePerformance();
     manageYouTube();
+    protectYouTubeVideo();
   }
+
+  // Proteção adicional após carregamento completo
+  window.addEventListener('load', function() {
+    console.log('Página carregada completamente, verificando vídeo...');
+    setTimeout(() => {
+      const iframes = document.querySelectorAll('iframe[src*="youtube.com"]');
+      if (iframes.length === 0) {
+        console.log('Nenhum iframe do YouTube encontrado após carregamento, restaurando...');
+        restoreYouTubeVideo();
+      }
+    }, 1000);
+  });
+
+  // Proteção contínua - verificar a cada 2 segundos
+  setInterval(function() {
+    const iframes = document.querySelectorAll('iframe[src*="youtube.com"]');
+    if (iframes.length === 0) {
+      console.log('Proteção contínua: iframe do YouTube removido, restaurando...');
+      restoreYouTubeVideo();
+    }
+  }, 2000);
   
 })();
 </script>
@@ -252,25 +351,50 @@ if (document.readyState === 'loading') {
 /* CSS para otimização da página */
 
 /* Garantir que o iframe do YouTube seja exibido corretamente */
-figure.image_resized iframe[src*="youtube.com"] {
+figure.image_resized iframe[src*="youtube.com"],
+.sc-f02dafb3-1.gdoSnV iframe[src*="youtube.com"],
+figure[class*="sc-80ea7b36-3"] iframe[src*="youtube.com"] {
   display: block !important;
   visibility: visible !important;
   opacity: 1 !important;
-  z-index: 10 !important;
+  z-index: 999 !important;
+  position: relative !important;
 }
 
 /* Garantir que o container do vídeo seja visível */
-figure.image_resized {
+figure.image_resized,
+.sc-f02dafb3-1.gdoSnV,
+figure[class*="sc-80ea7b36-3"] {
   display: block !important;
   position: relative !important;
 }
 
+/* Esconder qualquer imagem que possa estar sobrescrevendo o vídeo */
+.sc-f02dafb3-1.gdoSnV img,
+figure[class*="sc-80ea7b36-3"] img,
+figure.image_resized img {
+  display: none !important;
+}
+
+/* Garantir que o container do YouTube tenha prioridade */
+.sc-f02dafb3-1.gdoSnV > div[style*="position: relative"],
+figure[class*="sc-80ea7b36-3"] > div[style*="position: relative"],
+figure.image_resized > div[style*="position: relative"] {
+  display: block !important;
+  z-index: 1000 !important;
+  position: relative !important;
+}
+
 /* Esconder fallback quando o iframe carregar */
-#youtube-fallback {
+#youtube-fallback,
+#youtube-fallback-main,
+#youtube-fallback-restored {
   transition: opacity 0.3s ease;
 }
 
-#youtube-fallback.hidden {
+#youtube-fallback.hidden,
+#youtube-fallback-main.hidden,
+#youtube-fallback-restored.hidden {
   display: none !important;
 }
 </style><style data-styled="" data-styled-version="5.3.11">.gduZIE{width:100%;padding-right:15px;padding-left:15px;margin-right:auto;margin-left:auto;}/*!sc*/
