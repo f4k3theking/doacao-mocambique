@@ -1687,10 +1687,10 @@ function createMobileDonationBlock() {
     this.style.backgroundColor = '#009d4e';
   });
   
-  // Botão preparado para API PIX (sem redirecionamento)
+  // Botão redireciona para página de doação
   newButton.addEventListener('click', function() {
-    console.log('Botão "Quero Ajudar" clicado - abrindo modal PIX');
-    openPixModal();
+    console.log('Botão "Quero Ajudar" clicado - redirecionando para página de doação');
+    window.location.href = 'doacao.html';
   });
   
   // Montar o container
@@ -2202,8 +2202,8 @@ document.addEventListener('click', function(e) {
       e.target.closest('.sticky-outer-wrapper')) {
     e.preventDefault();
     e.stopPropagation();
-    console.log('Botão original "Quero Ajudar" clicado - abrindo modal PIX');
-    openPixModal();
+    console.log('Botão original "Quero Ajudar" clicado - redirecionando para página de doação');
+    window.location.href = 'doacao.html';
   }
 });
 
