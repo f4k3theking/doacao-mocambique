@@ -56,8 +56,8 @@
     });
   }
 
-  // Função para reproduzir o vídeo
-  function playVideo() {
+  // Função para reproduzir o vídeo (escopo global)
+  window.playVideo = function() {
     console.log('Iniciando reprodução do vídeo...');
     
     // Esconder containers de vídeo
@@ -83,7 +83,20 @@
     });
     
     console.log('Vídeo iniciado com sucesso!');
+  };
+
+  // Função de fallback para garantir que playVideo funcione
+  function playVideo() {
+    console.log('Função playVideo chamada (fallback)');
+    if (window.playVideo) {
+      window.playVideo();
+    } else {
+      console.error('Função playVideo não encontrada!');
+    }
   }
+
+  // Tornar a função globalmente acessível
+  window.playVideo = window.playVideo || playVideo;
 
   // Função para proteger o vídeo do YouTube contra substituição
   function protectYouTubeVideo() {
@@ -204,6 +217,39 @@
   }, 2000);
   
 })();
+
+// Garantir que a função playVideo esteja disponível globalmente
+if (typeof playVideo === 'undefined') {
+  window.playVideo = function() {
+    console.log('Executando playVideo (versão de emergência)');
+    
+    // Esconder containers de vídeo
+    const videoContainers = document.querySelectorAll('[id*="video-container"]');
+    videoContainers.forEach(container => {
+      container.style.display = 'none';
+      console.log('Container de vídeo escondido');
+    });
+    
+    // Mostrar iframes do YouTube
+    const youtubePlayers = document.querySelectorAll('[id*="youtube-player"]');
+    youtubePlayers.forEach((player, index) => {
+      player.style.display = 'block';
+      player.style.zIndex = '10';
+      
+      // Adicionar autoplay se não estiver presente
+      const currentSrc = player.src;
+      if (!currentSrc.includes('autoplay=1')) {
+        const separator = currentSrc.includes('?') ? '&' : '?';
+        player.src = currentSrc + separator + 'autoplay=1&mute=1';
+        console.log(`YouTube player ${index + 1} iniciado com autoplay`);
+      }
+    });
+    
+    console.log('Vídeo iniciado com sucesso!');
+  };
+  
+  console.log('Função playVideo definida globalmente');
+}
 </script>
 <style id="__jsx-3243365948">html{font-family:'Lato', 'Lato Fallback', arial,'Montserrat', 'Montserrat Fallback', arial}</style>
 
