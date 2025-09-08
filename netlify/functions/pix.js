@@ -40,86 +40,110 @@ exports.handler = async (event, context) => {
 
     console.log(`Gerando PIX para R$ ${amount}`);
 
-    // Payload para AmloPay
+    // Gerar identificador único para a transação
+    const identifier = 'pix_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+
+    // Payload correto para AmloPay (baseado na documentação)
     const payload = {
+      identifier: identifier,
       amount: amount,
-      currency: 'BRL',
-      payment_method: 'pix',
-      description: `Doação Moçambique - R$ ${amount.toFixed(2)}`,
-      customer: {
+      client: {
         name: 'Doador Anônimo',
         email: 'doador@vakinhadaafrica.site',
-        document: '00000000000'
-      }
-    };
-
-    // Tentar diferentes endpoints
-    const endpoints = [
-      'https://app.amplopay.com/api/v1/charges',
-      'https://app.amplopay.com/api/v1/payments',
-      'https://api.amplopay.com/v1/charges',
-      'https://api.amplopay.com/v1/payments'
-    ];
-
-    for (const endpoint of endpoints) {
-      try {
-        console.log(`Testando: ${endpoint}`);
-        
-        const response = await fetch(endpoint, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-            'Authorization': `Bearer ${secretKey}`,
-            'X-Public-Key': publicKey
-          },
-          body: JSON.stringify(payload)
-        });
-
-        console.log(`Status: ${response.status}`);
-        
-        if (response.ok) {
-          const result = await response.json();
-          console.log('✅ SUCESSO!', JSON.stringify(result));
-          
-          // Procurar dados do PIX na resposta
-          const pixData = {
-            qr_code: result.qr_code || result.qr_code_url || (result.data && result.data.qr_code),
-            pix_code: result.pix_code || result.copy_paste || (result.data && result.data.copy_paste),
-            payment_id: result.id || result.payment_id || (result.data && result.data.id)
-          };
-
-          return {
-            statusCode: 200,
-            headers,
-            body: JSON.stringify({
-              success: true,
-              payment_id: pixData.payment_id,
-              amount: amount,
-              pix_qr_code: pixData.qr_code,
-              pix_code: pixData.pix_code,
-              status: 'pending',
-              message: 'PIX gerado com sucesso!'
-            })
-          };
-        } else {
-          const errorText = await response.text();
-          console.log(`❌ Falhou: ${response.status} - ${errorText}`);
+        phone: '(11) 99999-9999',
+        document: '000.000.000-00'
+      },
+      products: [
+        {
+          id: 'donation_001',
+          name: `Doação Moçambique - R$ ${amount.toFixed(2)}`,
+          quantity: 1,
+          price: amount
         }
-      } catch (error) {
-        console.log(`❌ Erro: ${error.message}`);
-      }
-    }
-
-    // Se chegou aqui, todos falharam
-    return {
-      statusCode: 500,
-      headers,
-      body: JSON.stringify({
-        success: false,
-        error: 'Todos os endpoints falharam. Verifique se a conta AmloPay está ativa.'
-      })
+      ],
+      dueDate: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString().split('T')[0], // +1 dia
+      metadata: {
+        source: 'website',
+        campaign: 'mocambique'
+      },
+      callbackUrl: 'https://silver-dango-fef4bf.netlify.app/.netlify/functions/webhook'
     };
+
+    console.log('Payload:', JSON.stringify(payload, null, 2));
+
+    // Endpoint correto da AmloPay
+    const endpoint = 'https://app.amplopay.com/api/v1/gateway/pix/receive';
+
+    try {
+      console.log(`Chamando: ${endpoint}`);
+      
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'x-public-key': publicKey,
+          'x-secret-key': secretKey
+        },
+        body: JSON.stringify(payload)
+      });
+
+      console.log(`Status: ${response.status}`);
+      
+      if (response.ok) {
+        const result = await response.json();
+        console.log('✅ SUCESSO!', JSON.stringify(result, null, 2));
+        
+        // Extrair dados do PIX da resposta
+        const pixData = result.pix || {};
+        
+        return {
+          statusCode: 200,
+          headers,
+          body: JSON.stringify({
+            success: true,
+            payment_id: result.transactionId,
+            amount: amount,
+            pix_qr_code: pixData.image,
+            pix_code: pixData.code,
+            status: result.status,
+            message: 'PIX gerado com sucesso!',
+            order_url: result.order?.url
+          })
+        };
+      } else {
+        const errorText = await response.text();
+        console.log(`❌ Falhou: ${response.status} - ${errorText}`);
+        
+        let errorMessage = 'Erro ao gerar PIX';
+        try {
+          const errorJson = JSON.parse(errorText);
+          errorMessage = errorJson.message || errorMessage;
+        } catch (e) {
+          // Se não conseguir parsear JSON, usa o texto direto
+        }
+        
+        return {
+          statusCode: response.status,
+          headers,
+          body: JSON.stringify({
+            success: false,
+            error: errorMessage,
+            details: errorText
+          })
+        };
+      }
+    } catch (error) {
+      console.log(`❌ Erro de conexão: ${error.message}`);
+      return {
+        statusCode: 500,
+        headers,
+        body: JSON.stringify({
+          success: false,
+          error: `Erro de conexão: ${error.message}`
+        })
+      };
+    }
 
   } catch (error) {
     console.error('Erro geral:', error);
