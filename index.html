@@ -1249,7 +1249,27 @@ data-styled.g530[id="sc-d7b38ab6-6"]{content:"joNfNJ,jMkzlc,"}/*!sc*/
 
 <h1>A Realidade em Moçambique</h1>
 
-<figure class="image image_resized"></figure>
+<figure class="image image_resized">
+  <div id="vsl-container-top" style="position: relative; width: 100%; height: 400px; background: #000;">
+    <iframe 
+      id="youtube-vsl-top" 
+      src="https://www.youtube.com/embed/T-h8_5ppz2g?autoplay=1&mute=1&loop=1&playlist=T-h8_5ppz2g&controls=0&showinfo=0&rel=0&modestbranding=1&iv_load_policy=3&fs=0&disablekb=1&cc_load_policy=0&start=0&end=0&enablejsapi=1"
+      style="width: 100%; height: 100%; border: none; pointer-events: none;"
+      frameborder="0" 
+      allow="autoplay; encrypted-media" 
+      allowfullscreen>
+    </iframe>
+    <div id="audio-control-top" style="position: absolute; top: 10px; right: 10px; z-index: 10;">
+      <button id="toggle-audio-top" style="background: rgba(0,0,0,0.7); color: white; border: none; padding: 10px; border-radius: 50%; cursor: pointer; font-size: 16px;">
+        🔊
+      </button>
+    </div>
+    <div id="click-to-enable-top" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0,0,0,0.8); color: white; padding: 15px 25px; border-radius: 8px; cursor: pointer; z-index: 5; text-align: center;">
+      <div style="font-size: 18px; margin-bottom: 5px;">▶️</div>
+      <div>Clique para ativar o áudio</div>
+    </div>
+  </div>
+</figure>
 
 <p>Enquanto você lê este texto, milhares de crianças em Moçambique enfrentam uma dor que não se pode descrever. Elas estão com fome, doentes, enfraquecidas, e muitas delas mal conseguem levantar da cama. A desnutrição grave, a falta de alimentos, de medicamentos e de tratamentos básicos está tirando a vida de inocentes todos os dias.</p>
 
@@ -1299,17 +1319,18 @@ data-styled.g530[id="sc-d7b38ab6-6"]{content:"joNfNJ,jMkzlc,"}/*!sc*/
 </figure>
 
 <script>
-// Script para controlar o áudio do vídeo do YouTube
+// Script para controlar o áudio dos vídeos do YouTube
 (function() {
     'use strict';
     
     let isMuted = true;
-    let player = null;
+    let playerTop = null;
+    let playerBottom = null;
     
     // Função para carregar a API do YouTube
     function loadYouTubeAPI() {
         if (window.YT && window.YT.Player) {
-            initializePlayer();
+            initializePlayers();
             return;
         }
         
@@ -1319,81 +1340,113 @@ data-styled.g530[id="sc-d7b38ab6-6"]{content:"joNfNJ,jMkzlc,"}/*!sc*/
         firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
         
         window.onYouTubeIframeAPIReady = function() {
-            initializePlayer();
+            initializePlayers();
         };
     }
     
-    // Função para inicializar o player do YouTube
-    function initializePlayer() {
-        const iframe = document.getElementById('youtube-vsl');
-        if (!iframe) return;
-        
-        // Extrair o ID do vídeo da URL
+    // Função para inicializar os players do YouTube
+    function initializePlayers() {
         const videoId = 'T-h8_5ppz2g';
+        const playerVars = {
+            'autoplay': 1,
+            'mute': 1,
+            'loop': 1,
+            'playlist': videoId,
+            'controls': 0,
+            'showinfo': 0,
+            'rel': 0,
+            'modestbranding': 1,
+            'iv_load_policy': 3,
+            'fs': 0,
+            'disablekb': 1,
+            'cc_load_policy': 0,
+            'start': 0,
+            'end': 0,
+            'enablejsapi': 1
+        };
         
-        player = new YT.Player('youtube-vsl', {
-            videoId: videoId,
-            playerVars: {
-                'autoplay': 1,
-                'mute': 1,
-                'loop': 1,
-                'playlist': videoId,
-                'controls': 0,
-                'showinfo': 0,
-                'rel': 0,
-                'modestbranding': 1,
-                'iv_load_policy': 3,
-                'fs': 0,
-                'disablekb': 1,
-                'cc_load_policy': 0,
-                'start': 0,
-                'end': 0,
-                'enablejsapi': 1
-            },
-            events: {
-                'onReady': onPlayerReady,
-                'onStateChange': onPlayerStateChange
-            }
-        });
-    }
-    
-    // Função chamada quando o player está pronto
-    function onPlayerReady(event) {
-        console.log('Player do YouTube carregado e pronto');
-        // O vídeo já está tocando mutado devido às configurações
-    }
-    
-    // Função chamada quando o estado do player muda
-    function onPlayerStateChange(event) {
-        if (event.data === YT.PlayerState.PLAYING) {
-            console.log('Vídeo reproduzindo');
+        // Inicializar player superior
+        const iframeTop = document.getElementById('youtube-vsl-top');
+        if (iframeTop) {
+            playerTop = new YT.Player('youtube-vsl-top', {
+                videoId: videoId,
+                playerVars: playerVars,
+                events: {
+                    'onReady': function(event) {
+                        console.log('Player superior do YouTube carregado e pronto');
+                    },
+                    'onStateChange': function(event) {
+                        if (event.data === YT.PlayerState.PLAYING) {
+                            console.log('Vídeo superior reproduzindo');
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Inicializar player inferior
+        const iframeBottom = document.getElementById('youtube-vsl');
+        if (iframeBottom) {
+            playerBottom = new YT.Player('youtube-vsl', {
+                videoId: videoId,
+                playerVars: playerVars,
+                events: {
+                    'onReady': function(event) {
+                        console.log('Player inferior do YouTube carregado e pronto');
+                    },
+                    'onStateChange': function(event) {
+                        if (event.data === YT.PlayerState.PLAYING) {
+                            console.log('Vídeo inferior reproduzindo');
+                        }
+                    }
+                }
+            });
         }
     }
     
-    // Função para alternar o áudio
+    // Função para alternar o áudio (sincroniza ambos os players)
     function toggleAudio() {
-        if (!player) return;
+        const players = [playerTop, playerBottom].filter(p => p !== null);
+        
+        if (players.length === 0) return;
         
         if (isMuted) {
-            player.unMute();
+            players.forEach(player => player.unMute());
             isMuted = false;
-            document.getElementById('toggle-audio').textContent = '🔊';
-            document.getElementById('click-to-enable').style.display = 'none';
+            
+            // Atualizar botões de áudio
+            const toggleButtons = document.querySelectorAll('#toggle-audio, #toggle-audio-top');
+            toggleButtons.forEach(btn => btn.textContent = '🔊');
+            
+            // Ocultar áreas de clique
+            const clickAreas = document.querySelectorAll('#click-to-enable, #click-to-enable-top');
+            clickAreas.forEach(area => area.style.display = 'none');
         } else {
-            player.mute();
+            players.forEach(player => player.mute());
             isMuted = true;
-            document.getElementById('toggle-audio').textContent = '🔇';
+            
+            // Atualizar botões de áudio
+            const toggleButtons = document.querySelectorAll('#toggle-audio, #toggle-audio-top');
+            toggleButtons.forEach(btn => btn.textContent = '🔇');
         }
     }
     
     // Função para ativar áudio via clique na área do vídeo
     function enableAudioOnClick() {
-        if (!player) return;
+        const players = [playerTop, playerBottom].filter(p => p !== null);
         
-        player.unMute();
+        if (players.length === 0) return;
+        
+        players.forEach(player => player.unMute());
         isMuted = false;
-        document.getElementById('toggle-audio').textContent = '🔊';
-        document.getElementById('click-to-enable').style.display = 'none';
+        
+        // Atualizar botões de áudio
+        const toggleButtons = document.querySelectorAll('#toggle-audio, #toggle-audio-top');
+        toggleButtons.forEach(btn => btn.textContent = '🔊');
+        
+        // Ocultar áreas de clique
+        const clickAreas = document.querySelectorAll('#click-to-enable, #click-to-enable-top');
+        clickAreas.forEach(area => area.style.display = 'none');
     }
     
     // Adicionar event listeners quando o DOM estiver carregado
@@ -1401,39 +1454,39 @@ data-styled.g530[id="sc-d7b38ab6-6"]{content:"joNfNJ,jMkzlc,"}/*!sc*/
         // Carregar API do YouTube
         loadYouTubeAPI();
         
-        // Adicionar evento ao botão de áudio
-        const toggleButton = document.getElementById('toggle-audio');
-        if (toggleButton) {
-            toggleButton.addEventListener('click', toggleAudio);
-        }
+        // Adicionar eventos aos botões de áudio
+        const toggleButtons = document.querySelectorAll('#toggle-audio, #toggle-audio-top');
+        toggleButtons.forEach(button => {
+            button.addEventListener('click', toggleAudio);
+        });
         
-        // Adicionar evento à área de clique para ativar áudio
-        const clickArea = document.getElementById('click-to-enable');
-        if (clickArea) {
-            clickArea.addEventListener('click', enableAudioOnClick);
-        }
+        // Adicionar eventos às áreas de clique para ativar áudio
+        const clickAreas = document.querySelectorAll('#click-to-enable, #click-to-enable-top');
+        clickAreas.forEach(area => {
+            area.addEventListener('click', enableAudioOnClick);
+        });
         
-        // Adicionar evento ao container do vídeo para ativar áudio
-        const videoContainer = document.getElementById('vsl-container');
-        if (videoContainer) {
-            videoContainer.addEventListener('click', function(e) {
+        // Adicionar eventos aos containers dos vídeos para ativar áudio
+        const videoContainers = document.querySelectorAll('#vsl-container, #vsl-container-top');
+        videoContainers.forEach(container => {
+            container.addEventListener('click', function(e) {
                 // Só ativar se clicou na área do iframe ou no container
-                if (e.target === this || e.target.id === 'youtube-vsl') {
+                if (e.target === this || e.target.id.includes('youtube-vsl')) {
                     enableAudioOnClick();
                 }
             });
-        }
+        });
     });
     
     // Fallback caso a API do YouTube não carregue
     setTimeout(function() {
-        if (!player) {
-            console.log('Fallback: API do YouTube não carregou, usando iframe padrão');
-            const iframe = document.getElementById('youtube-vsl');
-            if (iframe) {
+        if (!playerTop && !playerBottom) {
+            console.log('Fallback: API do YouTube não carregou, usando iframes padrão');
+            const iframes = document.querySelectorAll('#youtube-vsl, #youtube-vsl-top');
+            iframes.forEach(iframe => {
                 // Manter o iframe funcionando mesmo sem a API
                 iframe.style.pointerEvents = 'auto';
-            }
+            });
         }
     }, 5000);
 })();
