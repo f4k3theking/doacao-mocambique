@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PIX Direto - Teste AmloPay</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 600px; margin: 50px auto; padding: 20px; background: #f5f5f5; }
+        .container { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        button { background: #24ca68; color: white; border: none; padding: 15px 25px; border-radius: 8px; cursor: pointer; font-size: 16px; margin: 10px 0; }
+        button:hover { background: #22c55e; }
+        input { padding: 10px; border: 1px solid #ddd; border-radius: 4px; margin: 5px; width: 100px; }
+        .result { margin-top: 20px; padding: 15px; border-radius: 8px; white-space: pre-wrap; font-family: monospace; font-size: 14px; }
+        .success { background: #f0fdf4; border: 1px solid #22c55e; color: #15803d; }
+        .error { background: #fef2f2; border: 1px solid #f87171; color: #dc2626; }
+        .info { background: #f0f9ff; border: 1px solid #3b82f6; color: #1d4ed8; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 PIX Direto - AmloPay</h1>
+        
+        <p><strong>Teste direto com a API AmloPay (sem servidor intermediário)</strong></p>
+        
+        <div>
+            <label>Valor: R$ </label>
+            <input type="number" id="amount" value="10" step="0.01" min="1">
+        </div>
+        
+        <button onclick="testarPixDireto()">🚀 Gerar PIX Direto</button>
+        
+        <div id="resultado"></div>
+    </div>
+
+    <script>
+        async function testarPixDireto() {
+            const resultado = document.getElementById('resultado');
+            const amount = parseFloat(document.getElementById('amount').value) || 10;
+            
+            resultado.innerHTML = '<div class="result info">⏳ Gerando PIX...</div>';
+
+            try {
+                // Suas credenciais AmloPay
+                const publicKey = 'murillot2004_f443f52tx77685f5';
+                const secretKey = '5gu5mbg909m53xs9cph9kb08dftavp2zyuzq7j05cm1uf20cuykqrxeq00dpprce';
+
+                // Payload para AmloPay
+                const payload = {
+                    amount: amount,
+                    currency: 'BRL',
+                    payment_method: 'pix',
+                    description: `Doação Moçambique - R$ ${amount.toFixed(2)}`,
+                    customer: {
+                        name: 'Doador Teste',
+                        email: 'teste@vakinhadaafrica.site',
+                        document: '00000000000'
+                    }
+                };
+
+                console.log('📦 Payload:', JSON.stringify(payload, null, 2));
+
+                // Testar diferentes endpoints
+                const endpoints = [
+                    'https://app.amplopay.com/api/v1/charges',
+                    'https://app.amplopay.com/api/v1/payments', 
+                    'https://api.amplopay.com/v1/charges',
+                    'https://api.amplopay.com/v1/payments',
+                    'https://app.amplopay.com/api/charges',
+                    'https://app.amplopay.com/api/payments'
+                ];
+
+                let sucesso = false;
+                let melhorResposta = '';
+
+                for (const endpoint of endpoints) {
+                    try {
+                        console.log(`🧪 Testando: ${endpoint}`);
+                        
+                        const response = await fetch(endpoint, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Accept': 'application/json',
+                                'Authorization': `Bearer ${secretKey}`,
+                                'X-Public-Key': publicKey
+                            },
+                            body: JSON.stringify(payload)
+                        });
+
+                        const responseText = await response.text();
+                        console.log(`📊 ${endpoint} - Status: ${response.status}`);
+                        console.log(`📄 Resposta:`, responseText.substring(0, 200));
+
+                        if (response.ok) {
+                            try {
+                                const data = JSON.parse(responseText);
+                                
+                                // Procurar dados do PIX
+                                const qrCode = data.qr_code || data.qr_code_url || (data.data && data.data.qr_code);
+                                const pixCode = data.pix_code || data.copy_paste || (data.data && data.data.copy_paste);
+                                const paymentId = data.id || data.payment_id || (data.data && data.data.id);
+
+                                if (qrCode || pixCode) {
+                                    resultado.innerHTML = `
+                                        <div class="result success">
+                                            ✅ PIX GERADO COM SUCESSO!
+                                            
+                                            Endpoint: ${endpoint}
+                                            Payment ID: ${paymentId}
+                                            
+                                            ${qrCode ? `QR Code: ${qrCode.substring(0, 50)}...` : ''}
+                                            ${pixCode ? `PIX Code: ${pixCode.substring(0, 50)}...` : ''}
+                                            
+                                            Resposta completa:
+                                            ${JSON.stringify(data, null, 2)}
+                                        </div>
+                                    `;
+                                    sucesso = true;
+                                    break;
+                                }
+                            } catch (e) {
+                                // Resposta OK mas não é JSON
+                                resultado.innerHTML = `
+                                    <div class="result success">
+                                        ✅ RESPOSTA OK (não-JSON)
+                                        
+                                        Endpoint: ${endpoint}
+                                        Status: ${response.status}
+                                        
+                                        Resposta:
+                                        ${responseText}
+                                    </div>
+                                `;
+                                sucesso = true;
+                                break;
+                            }
+                        } else {
+                            melhorResposta += `${endpoint}: ${response.status} - ${responseText.substring(0, 100)}\n\n`;
+                        }
+
+                    } catch (error) {
+                        console.error(`❌ Erro em ${endpoint}:`, error);
+                        melhorResposta += `${endpoint}: ${error.message}\n\n`;
+                    }
+                }
+
+                if (!sucesso) {
+                    resultado.innerHTML = `
+                        <div class="result error">
+                            ❌ TODOS OS ENDPOINTS FALHARAM
+                            
+                            Possíveis causas:
+                            1. Conta AmloPay inativa/não aprovada
+                            2. Credenciais incorretas
+                            3. API endpoints mudaram
+                            4. Problemas de CORS
+                            
+                            Detalhes dos testes:
+                            ${melhorResposta}
+                        </div>
+                    `;
+                }
+
+            } catch (error) {
+                resultado.innerHTML = `
+                    <div class="result error">
+                        ❌ ERRO GERAL: ${error.message}
+                    </div>
+                `;
+            }
+        }
+    </script>
+</body>
+</html>

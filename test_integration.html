@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste de Integração PIX - AmloPay</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #fafafa;
+        }
+        
+        .test-section h3 {
+            color: #24ca68;
+            margin-top: 0;
+        }
+        
+        button {
+            background-color: #24ca68;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+        }
+        
+        button:hover {
+            background-color: #22c55e;
+        }
+        
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 6px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 14px;
+        }
+        
+        .success {
+            background-color: #f0fdf4;
+            border: 1px solid #22c55e;
+            color: #15803d;
+        }
+        
+        .error {
+            background-color: #fef2f2;
+            border: 1px solid #f87171;
+            color: #dc2626;
+        }
+        
+        .info {
+            background-color: #f0f9ff;
+            border: 1px solid #3b82f6;
+            color: #1d4ed8;
+        }
+        
+        .credentials {
+            background-color: #fffbeb;
+            border: 1px solid #f59e0b;
+            color: #92400e;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+        }
+        
+        .amount-input {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-right: 10px;
+            width: 120px;
+        }
+        
+        .qr-code {
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .qr-code img {
+            max-width: 250px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        
+        .pix-code {
+            background: #f5f5f5;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 12px;
+            word-break: break-all;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Teste de Integração PIX - AmloPay</h1>
+        
+        <div class="credentials">
+            <strong>📋 Credenciais Configuradas:</strong><br>
+            Public Key: murillot2004_f443f52tx77685f5<br>
+            Secret Key: 5gu5mbg909m53xs9cph9kb08dftavp2zyuzq7j05cm1uf20cuykqrxeq00dpprce<br>
+            Base URL: https://app.amplopay.com/api/v1
+        </div>
+        
+        <!-- Teste 1: Conectividade da API -->
+        <div class="test-section">
+            <h3>🔌 Teste 1: Conectividade da API</h3>
+            <p>Testa se conseguimos conectar com a API da AmloPay</p>
+            <button onclick="testApiConnectivity()">Testar Conectividade</button>
+            <div id="connectivity-result"></div>
+        </div>
+        
+        <!-- Teste 2: Geração de PIX -->
+        <div class="test-section">
+            <h3>💰 Teste 2: Geração de PIX</h3>
+            <p>Testa a geração de um PIX de teste</p>
+            <input type="number" id="test-amount" class="amount-input" placeholder="10.00" step="0.01" min="1" value="10">
+            <button onclick="testPixGeneration()">Gerar PIX de Teste</button>
+            <div id="pix-result"></div>
+        </div>
+        
+        <!-- Teste 3: Webhook -->
+        <div class="test-section">
+            <h3>🔔 Teste 3: Webhook</h3>
+            <p>Testa se o webhook está funcionando corretamente</p>
+            <button onclick="testWebhook()">Testar Webhook</button>
+            <button onclick="viewWebhookLogs()">Ver Logs do Webhook</button>
+            <div id="webhook-result"></div>
+        </div>
+        
+        <!-- Teste 4: Integração Completa -->
+        <div class="test-section">
+            <h3>🎯 Teste 4: Integração Completa</h3>
+            <p>Simula o fluxo completo de doação</p>
+            <button onclick="testCompleteFlow()">Testar Fluxo Completo</button>
+            <div id="complete-result"></div>
+        </div>
+        
+        <!-- Logs -->
+        <div class="test-section">
+            <h3>📊 Logs e Monitoramento</h3>
+            <button onclick="viewApiLogs()">Ver Logs da API</button>
+            <button onclick="viewDonationStats()">Ver Estatísticas</button>
+            <button onclick="clearLogs()">Limpar Logs</button>
+            <div id="logs-result"></div>
+        </div>
+    </div>
+
+    <script>
+        // Função para exibir resultado
+        function showResult(elementId, message, type = 'info') {
+            const element = document.getElementById(elementId);
+            element.className = `result ${type}`;
+            element.textContent = message;
+        }
+
+        // Teste 1: Conectividade da API
+        async function testApiConnectivity() {
+            showResult('connectivity-result', 'Testando conectividade...', 'info');
+            
+            try {
+                const response = await fetch('test_api.php');
+                const result = await response.text();
+                
+                if (response.ok) {
+                    showResult('connectivity-result', `✅ Conectividade OK\n\n${result}`, 'success');
+                } else {
+                    showResult('connectivity-result', `❌ Erro de conectividade\n\n${result}`, 'error');
+                }
+            } catch (error) {
+                showResult('connectivity-result', `❌ Erro: ${error.message}`, 'error');
+            }
+        }
+
+        // Teste 2: Geração de PIX
+        async function testPixGeneration() {
+            const amount = parseFloat(document.getElementById('test-amount').value) || 10;
+            showResult('pix-result', 'Gerando PIX...', 'info');
+            
+            try {
+                const response = await fetch('/.netlify/functions/pix', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ amount: amount })
+                });
+                
+                const result = await response.json();
+                console.log('Resultado PIX:', result);
+                
+                if (result.success) {
+                    let message = `✅ PIX gerado com sucesso!\n\n`;
+                    message += `Payment ID: ${result.payment_id}\n`;
+                    message += `Valor: R$ ${result.amount.toFixed(2)}\n`;
+                    message += `Status: ${result.status}\n`;
+                    
+                    if (result.pix_qr_code) {
+                        message += `\n🔗 QR Code disponível\n`;
+                    }
+                    
+                    if (result.pix_code) {
+                        message += `\n📱 Código PIX:\n${result.pix_code.substring(0, 50)}...`;
+                    }
+                    
+                    showResult('pix-result', message, 'success');
+                    
+                    // Mostrar QR Code se disponível
+                    if (result.pix_qr_code) {
+                        const pixResult = document.getElementById('pix-result');
+                        const qrDiv = document.createElement('div');
+                        qrDiv.className = 'qr-code';
+                        qrDiv.innerHTML = `<img src="${result.pix_qr_code}" alt="QR Code PIX">`;
+                        pixResult.appendChild(qrDiv);
+                    }
+                    
+                    // Mostrar código PIX se disponível
+                    if (result.pix_code) {
+                        const pixResult = document.getElementById('pix-result');
+                        const codeDiv = document.createElement('div');
+                        codeDiv.className = 'pix-code';
+                        codeDiv.textContent = result.pix_code;
+                        pixResult.appendChild(codeDiv);
+                    }
+                    
+                } else {
+                    showResult('pix-result', `❌ Erro ao gerar PIX:\n\n${result.error}`, 'error');
+                }
+                
+            } catch (error) {
+                showResult('pix-result', `❌ Erro: ${error.message}`, 'error');
+            }
+        }
+
+        // Teste 3: Webhook
+        async function testWebhook() {
+            showResult('webhook-result', 'Testando webhook...', 'info');
+            
+            try {
+                // Simular uma notificação de webhook
+                const testData = {
+                    event: 'payment.completed',
+                    payment_id: 'test_' + Date.now(),
+                    status: 'approved',
+                    amount: 25.00,
+                    timestamp: new Date().toISOString()
+                };
+                
+                const response = await fetch('webhook.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(testData)
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    showResult('webhook-result', `✅ Webhook funcionando!\n\n${JSON.stringify(result, null, 2)}`, 'success');
+                } else {
+                    showResult('webhook-result', `❌ Erro no webhook:\n\n${JSON.stringify(result, null, 2)}`, 'error');
+                }
+                
+            } catch (error) {
+                showResult('webhook-result', `❌ Erro: ${error.message}`, 'error');
+            }
+        }
+
+        // Ver logs do webhook
+        async function viewWebhookLogs() {
+            try {
+                const response = await fetch('webhook_logs.txt');
+                const logs = await response.text();
+                
+                if (response.ok && logs) {
+                    showResult('webhook-result', `📋 Logs do Webhook:\n\n${logs}`, 'info');
+                } else {
+                    showResult('webhook-result', '📋 Nenhum log encontrado', 'info');
+                }
+            } catch (error) {
+                showResult('webhook-result', `❌ Erro ao ler logs: ${error.message}`, 'error');
+            }
+        }
+
+        // Teste 4: Fluxo completo
+        async function testCompleteFlow() {
+            showResult('complete-result', 'Iniciando teste completo...', 'info');
+            
+            let log = '🎯 TESTE COMPLETO DE INTEGRAÇÃO\n\n';
+            
+            try {
+                // Passo 1: Gerar PIX
+                log += '1️⃣ Gerando PIX...\n';
+                const pixResponse = await fetch('api_pix.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ amount: 15.00 })
+                });
+                
+                const pixResult = await pixResponse.json();
+                
+                if (pixResult.success) {
+                    log += `✅ PIX gerado: ${pixResult.payment_id}\n\n`;
+                    
+                    // Passo 2: Simular webhook de confirmação
+                    log += '2️⃣ Simulando confirmação de pagamento...\n';
+                    const webhookResponse = await fetch('webhook.php', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            event: 'payment.completed',
+                            payment_id: pixResult.payment_id,
+                            status: 'approved',
+                            amount: 15.00
+                        })
+                    });
+                    
+                    const webhookResult = await webhookResponse.json();
+                    
+                    if (webhookResponse.ok) {
+                        log += `✅ Webhook processado com sucesso\n\n`;
+                        
+                        // Passo 3: Verificar logs
+                        log += '3️⃣ Verificando logs...\n';
+                        try {
+                            const logsResponse = await fetch('webhook_logs.txt');
+                            const logs = await logsResponse.text();
+                            log += `✅ Logs atualizados (${logs.split('\n').length} linhas)\n\n`;
+                        } catch (e) {
+                            log += `⚠️ Logs não encontrados\n\n`;
+                        }
+                        
+                        log += '🎉 TESTE COMPLETO CONCLUÍDO COM SUCESSO!';
+                        showResult('complete-result', log, 'success');
+                        
+                    } else {
+                        log += `❌ Erro no webhook: ${webhookResult.error}\n`;
+                        showResult('complete-result', log, 'error');
+                    }
+                    
+                } else {
+                    log += `❌ Erro ao gerar PIX: ${pixResult.error}\n`;
+                    showResult('complete-result', log, 'error');
+                }
+                
+            } catch (error) {
+                log += `❌ Erro no teste: ${error.message}`;
+                showResult('complete-result', log, 'error');
+            }
+        }
+
+        // Ver logs da API
+        async function viewApiLogs() {
+            showResult('logs-result', 'Carregando logs...', 'info');
+            
+            try {
+                // Tentar ler vários arquivos de log
+                const logFiles = ['webhook_logs.txt', 'donations_log.txt', 'donation_counter.json'];
+                let allLogs = '📊 LOGS DO SISTEMA\n\n';
+                
+                for (const file of logFiles) {
+                    try {
+                        const response = await fetch(file);
+                        if (response.ok) {
+                            const content = await response.text();
+                            allLogs += `📁 ${file}:\n${content}\n\n${'='.repeat(50)}\n\n`;
+                        }
+                    } catch (e) {
+                        allLogs += `📁 ${file}: Arquivo não encontrado\n\n`;
+                    }
+                }
+                
+                showResult('logs-result', allLogs, 'info');
+                
+            } catch (error) {
+                showResult('logs-result', `❌ Erro: ${error.message}`, 'error');
+            }
+        }
+
+        // Ver estatísticas de doação
+        async function viewDonationStats() {
+            try {
+                const response = await fetch('donation_counter.json');
+                if (response.ok) {
+                    const stats = await response.json();
+                    const message = `📈 ESTATÍSTICAS DE DOAÇÕES\n\n` +
+                                  `💰 Total arrecadado: R$ ${stats.total.toFixed(2)}\n` +
+                                  `🎯 Número de doações: ${stats.count}\n` +
+                                  `📅 Última atualização: ${stats.last_update}`;
+                    showResult('logs-result', message, 'success');
+                } else {
+                    showResult('logs-result', '📈 Nenhuma estatística encontrada', 'info');
+                }
+            } catch (error) {
+                showResult('logs-result', `❌ Erro: ${error.message}`, 'error');
+            }
+        }
+
+        // Limpar logs
+        function clearLogs() {
+            if (confirm('Tem certeza que deseja limpar todos os logs?')) {
+                showResult('logs-result', '🧹 Logs limpos (funcionalidade simulada)', 'info');
+            }
+        }
+    </script>
+</body>
+</html>

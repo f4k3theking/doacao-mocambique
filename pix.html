@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doação PIX - Vaquinha África</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .logo {
+            width: 80px;
+            height: 80px;
+            background: #24ca68;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            color: white;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 16px;
+        }
+
+        .amount-selector {
+            margin-bottom: 30px;
+        }
+
+        .amount-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .amount-btn {
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            background: white;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            transition: all 0.3s ease;
+        }
+
+        .amount-btn:hover {
+            border-color: #24ca68;
+            transform: translateY(-2px);
+        }
+
+        .amount-btn.selected {
+            border-color: #24ca68;
+            background: #f0fdf4;
+            color: #16a34a;
+        }
+
+        .custom-amount {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 18px;
+            text-align: center;
+        }
+
+        .custom-amount:focus {
+            outline: none;
+            border-color: #24ca68;
+        }
+
+        .generate-btn {
+            width: 100%;
+            padding: 18px;
+            background: #24ca68;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 20px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+
+        .generate-btn:hover {
+            background: #22c55e;
+            transform: translateY(-2px);
+        }
+
+        .generate-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .result {
+            display: none;
+            margin-top: 30px;
+            padding: 30px;
+            background: #f8fffe;
+            border-radius: 15px;
+            border: 2px solid #22c55e;
+        }
+
+        .qr-code {
+            margin: 20px 0;
+        }
+
+        .qr-code img {
+            max-width: 250px;
+            border-radius: 10px;
+        }
+
+        .pix-code {
+            background: #f1f5f9;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 12px;
+            word-break: break-all;
+            margin: 15px 0;
+            position: relative;
+        }
+
+        .copy-btn {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+
+        .copy-btn:hover {
+            background: #2563eb;
+        }
+
+        .loading {
+            display: none;
+            margin: 20px 0;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #24ca68;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error {
+            display: none;
+            background: #fef2f2;
+            border: 2px solid #f87171;
+            color: #dc2626;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        .back-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            padding: 10px 15px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            backdrop-filter: blur(10px);
+        }
+
+        .success-message {
+            color: #16a34a;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 30px 20px;
+                margin: 10px;
+            }
+
+            .amount-buttons {
+                grid-template-columns: 1fr;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button class="back-btn" onclick="window.history.back()">← Voltar</button>
+    
+    <div class="container">
+        <div class="logo">💰</div>
+        <h1>Doação via PIX</h1>
+        <p class="subtitle">A Realidade em Moçambique - Ajude as Crianças</p>
+        
+        <div class="amount-selector">
+            <div class="amount-buttons">
+                <button class="amount-btn" data-amount="10">R$ 10,00</button>
+                <button class="amount-btn" data-amount="20">R$ 20,00</button>
+                <button class="amount-btn" data-amount="50">R$ 50,00</button>
+                <button class="amount-btn" data-amount="100">R$ 100,00</button>
+            </div>
+            <input type="number" class="custom-amount" placeholder="Ou digite o valor (ex: 25,00)" step="0.01" min="1">
+        </div>
+        
+        <button class="generate-btn" onclick="generatePix()">Gerar PIX</button>
+        
+        <div class="loading">
+            <div class="spinner"></div>
+            <p>Gerando seu PIX...</p>
+        </div>
+        
+        <div class="error">
+            <p id="error-message">Erro ao gerar PIX</p>
+        </div>
+        
+        <div class="result">
+            <div class="success-message">✅ PIX gerado com sucesso!</div>
+            <p><strong>Valor:</strong> <span id="pix-amount"></span></p>
+            <div class="qr-code">
+                <img id="qr-image" src="" alt="QR Code PIX">
+            </div>
+            <p><strong>Código PIX para copiar:</strong></p>
+            <div class="pix-code">
+                <div id="pix-code-text"></div>
+                <button class="copy-btn" onclick="copyPixCode()">Copiar Código</button>
+            </div>
+            <p style="font-size: 14px; color: #666; margin-top: 15px;">
+                Escaneie o QR Code ou copie o código PIX em seu aplicativo bancário
+            </p>
+        </div>
+    </div>
+
+    <script>
+        let selectedAmount = 0;
+
+        // Seleção de valores
+        document.querySelectorAll('.amount-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.amount-btn').forEach(b => b.classList.remove('selected'));
+                this.classList.add('selected');
+                selectedAmount = parseFloat(this.dataset.amount);
+                document.querySelector('.custom-amount').value = '';
+            });
+        });
+
+        document.querySelector('.custom-amount').addEventListener('input', function() {
+            document.querySelectorAll('.amount-btn').forEach(b => b.classList.remove('selected'));
+            selectedAmount = parseFloat(this.value) || 0;
+        });
+
+        async function generatePix() {
+            const amount = selectedAmount || parseFloat(document.querySelector('.custom-amount').value) || 0;
+            
+            if (amount <= 0) {
+                showError('Por favor, selecione ou digite um valor válido');
+                return;
+            }
+
+            showLoading(true);
+            hideError();
+            hideResult();
+
+            try {
+                console.log('Gerando PIX com GhostsPay DIRETO para valor:', amount);
+
+                // Teste múltiplos endpoints e payloads possíveis
+                const endpoints = [
+                    'https://app.ghostspaysv1.com/api/v1/charges',
+                    'https://app.ghostspaysv1.com/api/v1/payments',
+                    'https://app.ghostspaysv1.com/api/v1/pix',
+                    'https://app.ghostspaysv1.com/api/v1/'
+                ];
+
+                const payloadVariations = [
+                    // Variação 1: Estrutura padrão
+                    {
+                        public_key: '55f2ede1-41a3-4b7c-b50b-1bf45ddf353d',
+                        secret_key: '963985ef-8feb-43dd-8227-32b991ffde0f',
+                        amount: amount,
+                        currency: 'BRL',
+                        payment_method: 'pix',
+                        description: `Doação Moçambique - R$ ${amount.toFixed(2)}`,
+                        customer: {
+                            name: 'Doador Anônimo',
+                            email: 'doador@vakinhadaafrica.site',
+                            document: '00000000000'
+                        }
+                    },
+                    // Variação 2: Campos diretos
+                    {
+                        public_key: '55f2ede1-41a3-4b7c-b50b-1bf45ddf353d',
+                        secret_key: '963985ef-8feb-43dd-8227-32b991ffde0f',
+                        value: amount,
+                        payment_method: 'pix',
+                        description: `Doação Moçambique - R$ ${amount.toFixed(2)}`,
+                        customer_name: 'Doador Anônimo',
+                        customer_email: 'doador@vakinhadaafrica.site',
+                        customer_document: '00000000000'
+                    }
+                ];
+
+                const headerVariations = [
+                    // Headers 1: Basic auth
+                    {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'Authorization': `Bearer 963985ef-8feb-43dd-8227-32b991ffde0f`,
+                        'X-Public-Key': '55f2ede1-41a3-4b7c-b50b-1bf45ddf353d'
+                    },
+                    // Headers 2: API Key style
+                    {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-API-Key': '963985ef-8feb-43dd-8227-32b991ffde0f',
+                        'X-Public-Key': '55f2ede1-41a3-4b7c-b50b-1bf45ddf353d'
+                    },
+                    // Headers 3: Simple
+                    {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    }
+                ];
+
+                // Testar todas as combinações
+                for (let e = 0; e < endpoints.length; e++) {
+                    for (let p = 0; p < payloadVariations.length; p++) {
+                        for (let h = 0; h < headerVariations.length; h++) {
+                            const endpoint = endpoints[e];
+                            const payload = payloadVariations[p];
+                            const headers = headerVariations[h];
+
+                            console.log(`\n--- Teste ${e+1}.${p+1}.${h+1}: ${endpoint} ---`);
+                            console.log('Payload:', payload);
+                            console.log('Headers:', headers);
+
+                            try {
+                                const response = await fetch(endpoint, {
+                                    method: 'POST',
+                                    headers: headers,
+                                    body: JSON.stringify(payload)
+                                });
+
+                                console.log(`Status: ${response.status}`);
+                                
+                                const responseText = await response.text();
+                                console.log(`Resposta: ${responseText.substring(0, 300)}`);
+
+                                if (response.ok) {
+                                    console.log('✅ SUCESSO!');
+                                    let result;
+                                    try {
+                                        result = JSON.parse(responseText);
+                                        console.log('JSON:', result);
+
+                                        // Procurar dados do PIX na resposta
+                                        const pixData = {
+                                            qr_code: result.qr_code || result.qr_code_url || result.qrcode || 
+                                                     (result.data && (result.data.qr_code || result.data.qr_code_url)),
+                                            pix_code: result.pix_code || result.copy_paste || result.emv || 
+                                                     (result.data && (result.data.pix_code || result.data.copy_paste)),
+                                            amount: amount
+                                        };
+
+                                        if (pixData.qr_code || pixData.pix_code) {
+                                            showResult(pixData);
+                                            return; // SUCESSO! Parar aqui
+                                        }
+                                    } catch (e) {
+                                        console.log('Não é JSON válido');
+                                    }
+                                } else {
+                                    console.log(`❌ Erro ${response.status}`);
+                                }
+                            } catch (error) {
+                                console.log(`❌ Erro de rede: ${error.message}`);
+                            }
+
+                            // Pequena pausa entre tentativas
+                            await new Promise(resolve => setTimeout(resolve, 100));
+                        }
+                    }
+                }
+
+                throw new Error('Todas as tentativas falharam. Veja logs detalhados no console.');
+
+            } catch (error) {
+                console.error('Erro:', error);
+                showError(`Erro ao gerar PIX: ${error.message}`);
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        function showLoading(show) {
+            document.querySelector('.loading').style.display = show ? 'block' : 'none';
+            document.querySelector('.generate-btn').disabled = show;
+        }
+
+        function showError(message) {
+            document.getElementById('error-message').textContent = message;
+            document.querySelector('.error').style.display = 'block';
+        }
+
+        function hideError() {
+            document.querySelector('.error').style.display = 'none';
+        }
+
+        function showResult(data) {
+            document.getElementById('pix-amount').textContent = `R$ ${data.amount.toFixed(2)}`;
+            
+            if (data.qr_code) {
+                document.getElementById('qr-image').src = data.qr_code;
+                document.querySelector('.qr-code').style.display = 'block';
+            } else {
+                document.querySelector('.qr-code').style.display = 'none';
+            }
+            
+            if (data.pix_code) {
+                document.getElementById('pix-code-text').textContent = data.pix_code;
+            } else {
+                document.querySelector('.pix-code').style.display = 'none';
+            }
+            
+            document.querySelector('.result').style.display = 'block';
+        }
+
+        function hideResult() {
+            document.querySelector('.result').style.display = 'none';
+        }
+
+        function copyPixCode() {
+            const code = document.getElementById('pix-code-text').textContent;
+            navigator.clipboard.writeText(code).then(() => {
+                const btn = document.querySelector('.copy-btn');
+                const originalText = btn.textContent;
+                btn.textContent = 'Copiado!';
+                btn.style.background = '#16a34a';
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.style.background = '#3b82f6';
+                }, 2000);
+            });
+        }
+
+
+    </script>
+</body>
+</html>

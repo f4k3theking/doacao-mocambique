@@ -1,0 +1,14 @@
+{
+  "name": "vaquinha-africa",
+  "version": "1.0.0",
+  "description": "Sistema de doações para Moçambique",
+  "main": "index.html",
+  "scripts": {
+    "build": "echo 'Build completed'"
+  },
+  "dependencies": {},
+  "devDependencies": {},
+  "keywords": ["pix", "doacao", "mocambique"],
+  "author": "Daniel Klapperich Trajano",
+  "license": "MIT"
+}
