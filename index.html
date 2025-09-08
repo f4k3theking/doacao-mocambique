@@ -130,6 +130,35 @@
         }
     }
     
+    // Função para ativar áudio do YouTube
+    function enableYouTubeAudio() {
+        const iframe = document.getElementById('youtube-vsl-iframe');
+        const button = document.getElementById('enable-audio-btn');
+        
+        if (iframe && button) {
+            // Atualizar o src do iframe para remover o mute=1
+            const currentSrc = iframe.src;
+            const newSrc = currentSrc.replace('mute=1', 'mute=0');
+            iframe.src = newSrc;
+            
+            // Atualizar o botão
+            button.innerHTML = '<span>🔊</span><span>Áudio Ativado</span>';
+            button.style.background = 'rgba(0,255,0,0.7)';
+            button.disabled = true;
+            
+            console.log('Áudio do YouTube ativado');
+        }
+    }
+    
+    // Função para inicializar o controle do YouTube
+    function initializeYouTubeVSL() {
+        const button = document.getElementById('enable-audio-btn');
+        if (button) {
+            button.addEventListener('click', enableYouTubeAudio);
+            console.log('Controle de áudio do YouTube inicializado');
+        }
+    }
+    
     // Função principal para substituir imagens
     function replaceImagesWithVideo() {
         // Procurar por imagens específicas
@@ -287,6 +316,7 @@
             setTimeout(() => {
                 forceVideoPlay();
                 addVideoClickEvents();
+                initializeYouTubeVSL();
             }, 500);
         });
     } else {
@@ -294,6 +324,7 @@
         setTimeout(() => {
             forceVideoPlay();
             addVideoClickEvents();
+            initializeYouTubeVSL();
         }, 500);
     }
     
@@ -372,6 +403,55 @@ video[src*="vsl.mp4"] {
     -moz-user-select: none !important;
     -ms-user-select: none !important;
     user-select: none !important;
+}
+
+/* CSS para o iframe do YouTube */
+#youtube-vsl-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: #000;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+#youtube-vsl-iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    display: block;
+}
+
+#audio-control-overlay {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    z-index: 10;
+}
+
+#enable-audio-btn {
+    background: rgba(0,0,0,0.7);
+    color: white;
+    border: 2px solid #fff;
+    border-radius: 50px;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+}
+
+#enable-audio-btn:hover {
+    background: rgba(0,0,0,0.9);
+    transform: scale(1.05);
+}
+
+#enable-audio-btn:disabled {
+    cursor: not-allowed;
+    opacity: 0.8;
 }
 
 /* Esconder qualquer imagem que possa ser carregada pelo JavaScript, exceto a imagem local */
@@ -1277,7 +1357,24 @@ data-styled.g530[id="sc-d7b38ab6-6"]{content:"joNfNJ,jMkzlc,"}/*!sc*/
 <p>Mesmo a quilômetros de distância, sua compaixão pode alcançar o coração de uma criança faminta. Cada doação, cada compartilhamento, cada oração — tudo conta.</p>
 
 <figure class="image image_resized">
-  <video src="vsl/vsl.mp4" autoplay muted loop style="object-fit:cover; width: 100%; height: 100%;" data-audio-pending="true" data-vsl="true"></video>
+  <div id="youtube-vsl-container" style="position: relative; width: 100%; height: 100%; background: #000;">
+    <iframe 
+      id="youtube-vsl-iframe"
+      src="https://www.youtube.com/embed/StD99BVc1Mg?autoplay=1&mute=1&loop=1&playlist=StD99BVc1Mg&controls=1&modestbranding=1&rel=0&showinfo=0"
+      frameborder="0" 
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+      allowfullscreen
+      style="width: 100%; height: 100%; object-fit: cover;"
+      data-audio-pending="true"
+      data-vsl="true">
+    </iframe>
+    <div id="audio-control-overlay" style="position: absolute; top: 20px; right: 20px; z-index: 10;">
+      <button id="enable-audio-btn" style="background: rgba(0,0,0,0.7); color: white; border: 2px solid #fff; border-radius: 50px; padding: 10px 20px; cursor: pointer; font-size: 14px; font-weight: bold; display: flex; align-items: center; gap: 8px;">
+        <span>🔊</span>
+        <span>Ativar Áudio</span>
+      </button>
+    </div>
+  </div>
 </figure>
 
 
