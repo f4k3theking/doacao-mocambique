@@ -47,11 +47,11 @@ exports.handler = async (event, context) => {
     const payload = {
       identifier: identifier,
       amount: amount,
-         client: {
-        name: 'Doador Anônimo',
-        email: 'doador@vakinhadaafrica.site',
-        phone: '11999999999',
-        document: '00000000000'
+        client: {
+  name: 'João da Silva',
+  email: 'joao@gmail.com', 
+  phone: '11999999999',
+  document: '11144477735'  // CPF válido
       },
       products: [
         {
