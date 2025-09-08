@@ -68,49 +68,13 @@
       console.log('Container de vídeo escondido');
     });
     
-    // Criar player real do YouTube
+    // SOLUÇÃO DEFINITIVA: Substituir todo o conteúdo por iframe direto
     const youtubePlayers = document.querySelectorAll('[id*="youtube-player"]');
     youtubePlayers.forEach((player, index) => {
-      // Limpar conteúdo anterior
-      player.innerHTML = '';
-      
-      // Criar iframe do YouTube com parâmetros otimizados
-      const iframe = document.createElement('iframe');
-      iframe.src = 'https://www.youtube.com/embed/StD99BVc1Mg?autoplay=1&mute=1&loop=1&playlist=StD99BVc1Mg&controls=1&showinfo=0&rel=0&modestbranding=1&fs=1&disablekb=0&cc_load_policy=0&iv_load_policy=3&start=0&end=0&enablejsapi=1&origin=' + window.location.origin;
-      iframe.style.cssText = 'position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; z-index: 10;';
-      iframe.frameBorder = '0';
-      iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
-      iframe.allowFullscreen = true;
-      iframe.title = 'Vídeo sobre a realidade em Moçambique';
-      
-      // Adicionar iframe ao player
-      player.appendChild(iframe);
+      // Substituir TODO o conteúdo do player
+      player.innerHTML = '<iframe src="https://www.youtube.com/embed/StD99BVc1Mg?controls=1&showinfo=0&rel=0&modestbranding=1&fs=1" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; z-index: 10;" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen title="Vídeo sobre a realidade em Moçambique"></iframe>';
       player.style.display = 'block';
       player.style.zIndex = '10';
-      
-      // Tentar forçar autoplay após carregamento
-      iframe.onload = function() {
-        console.log(`YouTube iframe ${index + 1} carregado`);
-        
-        // Tentar reproduzir via API do YouTube
-        try {
-          if (iframe.contentWindow && iframe.contentWindow.postMessage) {
-            iframe.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
-            console.log(`Tentativa de reprodução via API enviada para player ${index + 1}`);
-          }
-        } catch (e) {
-          console.log(`Erro ao tentar reproduzir via API: ${e.message}`);
-        }
-        
-        // Fallback: recarregar com autoplay forçado
-        setTimeout(() => {
-          if (iframe.src.includes('autoplay=1')) {
-            console.log(`Recarregando iframe ${index + 1} com autoplay forçado`);
-            iframe.src = iframe.src.replace('autoplay=1', 'autoplay=1&mute=1&loop=1');
-          }
-        }, 1000);
-      };
-      
       console.log(`Player de vídeo ${index + 1} criado com sucesso`);
     });
     
@@ -274,49 +238,13 @@ if (typeof playVideo === 'undefined') {
       console.log('Container de vídeo escondido');
     });
     
-    // Criar player real do YouTube
+    // SOLUÇÃO DEFINITIVA: Substituir todo o conteúdo por iframe direto
     const youtubePlayers = document.querySelectorAll('[id*="youtube-player"]');
     youtubePlayers.forEach((player, index) => {
-      // Limpar conteúdo anterior
-      player.innerHTML = '';
-      
-      // Criar iframe do YouTube com parâmetros otimizados
-      const iframe = document.createElement('iframe');
-      iframe.src = 'https://www.youtube.com/embed/StD99BVc1Mg?autoplay=1&mute=1&loop=1&playlist=StD99BVc1Mg&controls=1&showinfo=0&rel=0&modestbranding=1&fs=1&disablekb=0&cc_load_policy=0&iv_load_policy=3&start=0&end=0&enablejsapi=1&origin=' + window.location.origin;
-      iframe.style.cssText = 'position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; z-index: 10;';
-      iframe.frameBorder = '0';
-      iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
-      iframe.allowFullscreen = true;
-      iframe.title = 'Vídeo sobre a realidade em Moçambique';
-      
-      // Adicionar iframe ao player
-      player.appendChild(iframe);
+      // Substituir TODO o conteúdo do player
+      player.innerHTML = '<iframe src="https://www.youtube.com/embed/StD99BVc1Mg?controls=1&showinfo=0&rel=0&modestbranding=1&fs=1" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; z-index: 10;" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen title="Vídeo sobre a realidade em Moçambique"></iframe>';
       player.style.display = 'block';
       player.style.zIndex = '10';
-      
-      // Tentar forçar autoplay após carregamento
-      iframe.onload = function() {
-        console.log(`YouTube iframe ${index + 1} carregado (emergência)`);
-        
-        // Tentar reproduzir via API do YouTube
-        try {
-          if (iframe.contentWindow && iframe.contentWindow.postMessage) {
-            iframe.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
-            console.log(`Tentativa de reprodução via API enviada para player ${index + 1} (emergência)`);
-          }
-        } catch (e) {
-          console.log(`Erro ao tentar reproduzir via API (emergência): ${e.message}`);
-        }
-        
-        // Fallback: recarregar com autoplay forçado
-        setTimeout(() => {
-          if (iframe.src.includes('autoplay=1')) {
-            console.log(`Recarregando iframe ${index + 1} com autoplay forçado (emergência)`);
-            iframe.src = iframe.src.replace('autoplay=1', 'autoplay=1&mute=1&loop=1');
-          }
-        }, 1000);
-      };
-      
       console.log(`Player de vídeo ${index + 1} criado com sucesso (emergência)`);
     });
     
