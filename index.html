@@ -1277,9 +1277,167 @@ data-styled.g530[id="sc-d7b38ab6-6"]{content:"joNfNJ,jMkzlc,"}/*!sc*/
 <p>Mesmo a quilômetros de distância, sua compaixão pode alcançar o coração de uma criança faminta. Cada doação, cada compartilhamento, cada oração — tudo conta.</p>
 
 <figure class="image image_resized">
-  <video src="vsl/vsl.mp4" autoplay muted loop style="object-fit:cover; width: 100%; height: 100%;" data-audio-pending="true" data-vsl="true"></video>
+  <div id="vsl-container" style="position: relative; width: 100%; height: 400px; background: #000;">
+    <iframe 
+      id="youtube-vsl" 
+      src="https://www.youtube.com/embed/T-h8_5ppz2g?autoplay=1&mute=1&loop=1&playlist=T-h8_5ppz2g&controls=0&showinfo=0&rel=0&modestbranding=1&iv_load_policy=3&fs=0&disablekb=1&cc_load_policy=0&start=0&end=0&enablejsapi=1"
+      style="width: 100%; height: 100%; border: none; pointer-events: none;"
+      frameborder="0" 
+      allow="autoplay; encrypted-media" 
+      allowfullscreen>
+    </iframe>
+    <div id="audio-control" style="position: absolute; top: 10px; right: 10px; z-index: 10;">
+      <button id="toggle-audio" style="background: rgba(0,0,0,0.7); color: white; border: none; padding: 10px; border-radius: 50%; cursor: pointer; font-size: 16px;">
+        🔊
+      </button>
+    </div>
+    <div id="click-to-enable" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0,0,0,0.8); color: white; padding: 15px 25px; border-radius: 8px; cursor: pointer; z-index: 5; text-align: center;">
+      <div style="font-size: 18px; margin-bottom: 5px;">▶️</div>
+      <div>Clique para ativar o áudio</div>
+    </div>
+  </div>
 </figure>
 
+<script>
+// Script para controlar o áudio do vídeo do YouTube
+(function() {
+    'use strict';
+    
+    let isMuted = true;
+    let player = null;
+    
+    // Função para carregar a API do YouTube
+    function loadYouTubeAPI() {
+        if (window.YT && window.YT.Player) {
+            initializePlayer();
+            return;
+        }
+        
+        const tag = document.createElement('script');
+        tag.src = 'https://www.youtube.com/iframe_api';
+        const firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+        
+        window.onYouTubeIframeAPIReady = function() {
+            initializePlayer();
+        };
+    }
+    
+    // Função para inicializar o player do YouTube
+    function initializePlayer() {
+        const iframe = document.getElementById('youtube-vsl');
+        if (!iframe) return;
+        
+        // Extrair o ID do vídeo da URL
+        const videoId = 'T-h8_5ppz2g';
+        
+        player = new YT.Player('youtube-vsl', {
+            videoId: videoId,
+            playerVars: {
+                'autoplay': 1,
+                'mute': 1,
+                'loop': 1,
+                'playlist': videoId,
+                'controls': 0,
+                'showinfo': 0,
+                'rel': 0,
+                'modestbranding': 1,
+                'iv_load_policy': 3,
+                'fs': 0,
+                'disablekb': 1,
+                'cc_load_policy': 0,
+                'start': 0,
+                'end': 0,
+                'enablejsapi': 1
+            },
+            events: {
+                'onReady': onPlayerReady,
+                'onStateChange': onPlayerStateChange
+            }
+        });
+    }
+    
+    // Função chamada quando o player está pronto
+    function onPlayerReady(event) {
+        console.log('Player do YouTube carregado e pronto');
+        // O vídeo já está tocando mutado devido às configurações
+    }
+    
+    // Função chamada quando o estado do player muda
+    function onPlayerStateChange(event) {
+        if (event.data === YT.PlayerState.PLAYING) {
+            console.log('Vídeo reproduzindo');
+        }
+    }
+    
+    // Função para alternar o áudio
+    function toggleAudio() {
+        if (!player) return;
+        
+        if (isMuted) {
+            player.unMute();
+            isMuted = false;
+            document.getElementById('toggle-audio').textContent = '🔊';
+            document.getElementById('click-to-enable').style.display = 'none';
+        } else {
+            player.mute();
+            isMuted = true;
+            document.getElementById('toggle-audio').textContent = '🔇';
+        }
+    }
+    
+    // Função para ativar áudio via clique na área do vídeo
+    function enableAudioOnClick() {
+        if (!player) return;
+        
+        player.unMute();
+        isMuted = false;
+        document.getElementById('toggle-audio').textContent = '🔊';
+        document.getElementById('click-to-enable').style.display = 'none';
+    }
+    
+    // Adicionar event listeners quando o DOM estiver carregado
+    document.addEventListener('DOMContentLoaded', function() {
+        // Carregar API do YouTube
+        loadYouTubeAPI();
+        
+        // Adicionar evento ao botão de áudio
+        const toggleButton = document.getElementById('toggle-audio');
+        if (toggleButton) {
+            toggleButton.addEventListener('click', toggleAudio);
+        }
+        
+        // Adicionar evento à área de clique para ativar áudio
+        const clickArea = document.getElementById('click-to-enable');
+        if (clickArea) {
+            clickArea.addEventListener('click', enableAudioOnClick);
+        }
+        
+        // Adicionar evento ao container do vídeo para ativar áudio
+        const videoContainer = document.getElementById('vsl-container');
+        if (videoContainer) {
+            videoContainer.addEventListener('click', function(e) {
+                // Só ativar se clicou na área do iframe ou no container
+                if (e.target === this || e.target.id === 'youtube-vsl') {
+                    enableAudioOnClick();
+                }
+            });
+        }
+    });
+    
+    // Fallback caso a API do YouTube não carregue
+    setTimeout(function() {
+        if (!player) {
+            console.log('Fallback: API do YouTube não carregou, usando iframe padrão');
+            const iframe = document.getElementById('youtube-vsl');
+            if (iframe) {
+                // Manter o iframe funcionando mesmo sem a API
+                iframe.style.pointerEvents = 'auto';
+            }
+        }
+    }, 5000);
+})();
+</script>
 
 </div></div></div></div><div id="content-section" class="sc-gEvEer eWGeoZ"><div class="sc-eqUAAy fMzXLa"></div></div></div><div class="sc-eqUAAy dAPKut"><div class="sticky-outer-wrapper"><div class="sticky-inner-wrapper" style="position:relative;top:0px;z-index:100"><div class="sc-jXbUNg iqgUsk sc-80ea7b36-12 iOXwhr"><div class="sc-80ea7b36-7 cKZswN"><div class="sc-4a18945f-0 bpGfFJ"><a style="pointer-events:auto" class="sc-4a18945f-9 fzcltd" href="/usuario/daniel-klapperich-trajano"><div class="lazyload-wrapper "><div style="height:45px" class="lazyload-placeholder"></div></div></a><a style="pointer-events:auto" class="sc-4a18945f-10 jHJfas" href="/usuario/daniel-klapperich-trajano"><div class="sc-4a18945f-1 ialHYi"><div class="sc-4a18945f-2 bcwPVE">Daniel</div><div class="sc-4a18945f-4 VpNEr"><span>Varjota</span> <span>CE</span></div><div class="sc-79659b75-0 cGIZSC"><strong>Ativo(a) no Vakinha desde <!-- -->maio/2025</strong></div><div class="sc-4a18945f-5 dAbFoS"><span>2 vaquinhas criadas</span><span>1 vaquinha apoiada</span></div><p class="sc-4a18945f-7 gWRSdt">
 
