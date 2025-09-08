@@ -373,7 +373,7 @@
         return originalPlay.call(this);
     };
     
-    // Interceptar criação de vídeos VSL
+    // Interceptar criação de vídeos VSL e imagens
     const originalCreateElement = document.createElement;
     document.createElement = function(tagName) {
         const element = originalCreateElement.call(this, tagName);
@@ -382,6 +382,24 @@
                 if (this.src && this.src.includes('vsl.mp4')) {
                     this.style.display = 'none';
                     console.log('Bloqueando vídeo VSL antigo');
+                }
+            });
+        }
+        if (tagName.toLowerCase() === 'img') {
+            // Interceptar quando o src é definido
+            let originalSrc = '';
+            Object.defineProperty(element, 'src', {
+                get: function() { return originalSrc; },
+                set: function(value) {
+                    originalSrc = value;
+                    if (value && value.includes('bd056235-c6e6-456c-b0a7-41f6fde5ad05') && !value.includes('images/bd056235-c6e6-456c-b0a7-41f6fde5ad05_1.jpeg')) {
+                        console.log('Interceptando criação de imagem, bloqueando...');
+                        // Não definir o src, deixar vazio
+                        element.setAttribute('data-blocked', 'true');
+                        element.style.display = 'none';
+                        return;
+                    }
+                    element.setAttribute('src', value);
                 }
             });
         }
@@ -399,7 +417,161 @@
         return originalSetInterval.call(this, callback, delay);
     };
     
+    // Interceptar qualquer tentativa de carregar a imagem problemática
+    function interceptImageLoading() {
+        // Interceptar fetch/XMLHttpRequest para a imagem
+        const originalFetch = window.fetch;
+        window.fetch = function(url, options) {
+            if (typeof url === 'string' && url.includes('bd056235-c6e6-456c-b0a7-41f6fde5ad05') && !url.includes('images/bd056235-c6e6-456c-b0a7-41f6fde5ad05_1.jpeg')) {
+                console.log('Bloqueando fetch da imagem problemática:', url);
+                return Promise.reject(new Error('Imagem bloqueada'));
+            }
+            return originalFetch.call(this, url, options);
+        };
+        
+        // Interceptar XMLHttpRequest
+        const originalXHROpen = XMLHttpRequest.prototype.open;
+        XMLHttpRequest.prototype.open = function(method, url, ...args) {
+            if (typeof url === 'string' && url.includes('bd056235-c6e6-456c-b0a7-41f6fde5ad05') && !url.includes('images/bd056235-c6e6-456c-b0a7-41f6fde5ad05_1.jpeg')) {
+                console.log('Bloqueando XMLHttpRequest da imagem problemática:', url);
+                this.abort();
+                return;
+            }
+            return originalXHROpen.call(this, method, url, ...args);
+        };
+        
+        // Observar mudanças no DOM para interceptar imagens
+        const observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+                if (mutation.type === 'childList') {
+                    mutation.addedNodes.forEach(function(node) {
+                        if (node.nodeType === 1) { // Element node
+                            if (node.tagName === 'IMG') {
+                                const src = node.src || node.getAttribute('src');
+                                if (src && src.includes('bd056235-c6e6-456c-b0a7-41f6fde5ad05') && !src.includes('images/bd056235-c6e6-456c-b0a7-41f6fde5ad05_1.jpeg')) {
+                                    console.log('Imagem problemática detectada no DOM, removendo...');
+                                    node.style.display = 'none';
+                                    node.remove();
+                                }
+                            }
+                            // Verificar filhos também
+                            const images = node.querySelectorAll && node.querySelectorAll('img');
+                            if (images) {
+                                images.forEach(function(img) {
+                                    const src = img.src || img.getAttribute('src');
+                                    if (src && src.includes('bd056235-c6e6-456c-b0a7-41f6fde5ad05') && !src.includes('images/bd056235-c6e6-456c-b0a7-41f6fde5ad05_1.jpeg')) {
+                                        console.log('Imagem problemática detectada nos filhos, removendo...');
+                                        img.style.display = 'none';
+                                        img.remove();
+                                    }
+                                });
+                            }
+                        }
+                    });
+                }
+            });
+        });
+        
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true
+        });
+    }
+    
+    // Executar interceptação
+    interceptImageLoading();
+    
+    // Função para forçar substituição da imagem pelo iframe
+    function forceReplaceImageWithIframe() {
+        const container = document.querySelector('.sc-80ea7b36-3.knWfgS');
+        if (container) {
+            // Remover qualquer imagem existente
+            const images = container.querySelectorAll('img');
+            images.forEach(img => {
+                if (img.src && img.src.includes('bd056235-c6e6-456c-b0a7-41f6fde5ad05') && !img.src.includes('images/bd056235-c6e6-456c-b0a7-41f6fde5ad05_1.jpeg')) {
+                    console.log('Removendo imagem problemática do container');
+                    img.remove();
+                }
+            });
+            
+            // Verificar se já existe o iframe do YouTube
+            const existingIframe = container.querySelector('.youtube-container');
+            if (!existingIframe) {
+                console.log('Criando iframe do YouTube no container');
+                const youtubeContainer = document.createElement('div');
+                youtubeContainer.className = 'youtube-container';
+                youtubeContainer.innerHTML = `
+                    <iframe 
+                        src="https://www.youtube.com/embed/StD99BVc1Mg?autoplay=1&mute=1&playsinline=1&controls=1&start=54&rel=0&modestbranding=1" 
+                        frameborder="0" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                        allowfullscreen
+                        class="youtube-iframe">
+                    </iframe>
+                `;
+                container.appendChild(youtubeContainer);
+            }
+        }
+    }
+    
+    // Executar imediatamente
+    forceReplaceImageWithIframe();
+    
+    // Executar novamente após um delay
+    setTimeout(forceReplaceImageWithIframe, 1000);
+    setTimeout(forceReplaceImageWithIframe, 3000);
+    
     console.log('Scripts antigos de VSL desabilitados com sucesso');
+})();
+
+// Script adicional para garantir que a substituição funcione
+(function() {
+    'use strict';
+    
+    function ensureYouTubeIframe() {
+        const container = document.querySelector('.sc-80ea7b36-3.knWfgS');
+        if (container) {
+            // Remover todas as imagens problemáticas
+            const images = container.querySelectorAll('img');
+            images.forEach(img => {
+                if (img.src && img.src.includes('bd056235-c6e6-456c-b0a7-41f6fde5ad05') && !img.src.includes('images/bd056235-c6e6-456c-b0a7-41f6fde5ad05_1.jpeg')) {
+                    console.log('Removendo imagem problemática:', img.src);
+                    img.remove();
+                }
+            });
+            
+            // Garantir que o iframe do YouTube existe
+            let iframeContainer = container.querySelector('.youtube-container');
+            if (!iframeContainer) {
+                console.log('Criando iframe do YouTube');
+                iframeContainer = document.createElement('div');
+                iframeContainer.className = 'youtube-container';
+                iframeContainer.innerHTML = `
+                    <iframe 
+                        src="https://www.youtube.com/embed/StD99BVc1Mg?autoplay=1&mute=1&playsinline=1&controls=1&start=54&rel=0&modestbranding=1" 
+                        frameborder="0" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                        allowfullscreen
+                        class="youtube-iframe">
+                    </iframe>
+                `;
+                container.appendChild(iframeContainer);
+            }
+        }
+    }
+    
+    // Executar quando o DOM estiver carregado
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', ensureYouTubeIframe);
+    } else {
+        ensureYouTubeIframe();
+    }
+    
+    // Executar periodicamente para garantir que funcione
+    setInterval(ensureYouTubeIframe, 2000);
+    
+    // Executar quando a página estiver completamente carregada
+    window.addEventListener('load', ensureYouTubeIframe);
 })();
 </script><style id="__jsx-3243365948">html{font-family:'Lato', 'Lato Fallback', arial,'Montserrat', 'Montserrat Fallback', arial}</style>
 <style>
@@ -420,6 +592,28 @@ video[src*="vsl.mp4"] {
 /* Esconder qualquer imagem que possa ser carregada pelo JavaScript, exceto a imagem local */
 img[src*="bd056235-c6e6-456c-b0a7-41f6fde5ad05"]:not([src*="images/bd056235-c6e6-456c-b0a7-41f6fde5ad05_1.jpeg"]) {
     display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    width: 0 !important;
+    height: 0 !important;
+}
+
+/* Esconder qualquer elemento que contenha a imagem problemática */
+div:has(img[src*="bd056235-c6e6-456c-b0a7-41f6fde5ad05"]:not([src*="images/bd056235-c6e6-456c-b0a7-41f6fde5ad05_1.jpeg"])) {
+    display: none !important;
+}
+
+/* Forçar exibição do iframe do YouTube */
+.youtube-container {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+.youtube-iframe {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
 }
 
 /* Garantir que o container do vídeo seja visível */
