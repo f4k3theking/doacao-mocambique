@@ -130,24 +130,9 @@
         }
     }
     
-    // Função para ativar áudio do YouTube
+    // Função para ativar áudio do YouTube (mantida para compatibilidade)
     function enableYouTubeAudio() {
-        const iframe = document.getElementById('youtube-vsl-iframe-main');
-        const button = document.getElementById('enable-audio-btn-main');
-        
-        if (iframe && button) {
-            // Atualizar o src do iframe para remover o mute=1
-            const currentSrc = iframe.src;
-            const newSrc = currentSrc.replace('mute=1', 'mute=0');
-            iframe.src = newSrc;
-            
-            // Atualizar o botão
-            button.innerHTML = '<span>🔊</span><span>Áudio Ativado</span>';
-            button.style.background = 'rgba(0,255,0,0.7)';
-            button.disabled = true;
-            
-            console.log('Áudio do YouTube ativado');
-        }
+        console.log('Áudio já está ativado por padrão');
     }
     
     // Função para inicializar o controle do YouTube
@@ -1412,7 +1397,7 @@ data-styled.g530[id="sc-d7b38ab6-6"]{content:"joNfNJ,jMkzlc,"}/*!sc*/
   <div id="youtube-vsl-container-main" style="position: relative; width: 100%; height: 100%; background: #000; min-height: 400px; border-radius: 8px; overflow: hidden;">
     <iframe 
       id="youtube-vsl-iframe-main"
-      src="https://www.youtube-nocookie.com/embed/StD99BVc1Mg?autoplay=0&mute=1&loop=1&playlist=StD99BVc1Mg&controls=1&modestbranding=1&rel=0&showinfo=0&enablejsapi=1&fs=1&cc_load_policy=0&iv_load_policy=3&start=0&end=0&origin=https://vakinhadaafrica.site&wmode=opaque&html5=1&playsinline=1"
+      src="https://www.youtube-nocookie.com/embed/StD99BVc1Mg?autoplay=0&mute=0&loop=1&playlist=StD99BVc1Mg&controls=1&modestbranding=1&rel=0&showinfo=0&enablejsapi=1&fs=1&cc_load_policy=0&iv_load_policy=3&start=0&end=0&origin=https://vakinhadaafrica.site&wmode=opaque&html5=1&playsinline=1"
       frameborder="0" 
       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen" 
       allowfullscreen
@@ -1424,23 +1409,10 @@ data-styled.g530[id="sc-d7b38ab6-6"]{content:"joNfNJ,jMkzlc,"}/*!sc*/
       onload="console.log('YouTube iframe carregado com sucesso'); this.style.background='transparent';"
       onerror="console.error('Erro ao carregar iframe do YouTube')">
     </iframe>
-    <div id="youtube-fallback" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(45deg, #000 0%, #333 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 18px; z-index: 5; cursor: pointer;">
-      <div style="text-align: center;">
-        <div style="font-size: 80px; margin-bottom: 20px; color: #ff0000; text-shadow: 0 0 20px rgba(255,0,0,0.5);">▶</div>
-        <div style="font-size: 24px; font-weight: bold; margin-bottom: 10px;">Clique para assistir o vídeo</div>
-        <div style="font-size: 16px; margin-top: 10px; opacity: 0.9;">A Realidade em Moçambique</div>
-        <div style="font-size: 12px; margin-top: 5px; opacity: 0.7;">Vídeo do YouTube</div>
-        <div style="margin-top: 20px;">
-          <a href="https://www.youtube.com/watch?v=StD99BVc1Mg" target="_blank" style="color: #ff0000; text-decoration: none; font-size: 14px; border: 1px solid #ff0000; padding: 8px 16px; border-radius: 20px; display: inline-block;">
-            Abrir no YouTube
-          </a>
-        </div>
-      </div>
-    </div>
     <div id="audio-control-overlay-main" style="position: absolute; top: 20px; right: 20px; z-index: 10;">
-      <button id="enable-audio-btn-main" style="background: rgba(0,0,0,0.7); color: white; border: 2px solid #fff; border-radius: 50px; padding: 10px 20px; cursor: pointer; font-size: 14px; font-weight: bold; display: flex; align-items: center; gap: 8px;">
+      <button id="enable-audio-btn-main" style="background: rgba(0,255,0,0.7); color: white; border: 2px solid #fff; border-radius: 50px; padding: 10px 20px; cursor: pointer; font-size: 14px; font-weight: bold; display: flex; align-items: center; gap: 8px;">
         <span>🔊</span>
-        <span>Ativar Áudio</span>
+        <span>Áudio Ativado</span>
       </button>
     </div>
   </div>
