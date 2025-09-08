@@ -6,34 +6,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="A Realidade em Moçambique: Milhares de crianças enfrentam fome e doenças graves. Sua doação pode salvar vidas através de alimentos, medicamentos e tratamentos. Ajude agora!">
     
-    <!-- Favicons com caminhos absolutos -->
-    <link rel="icon" href="./images/favicon.ico" type="image/x-icon">
-    <link rel="shortcut icon" href="./images/favicon.ico" type="image/x-icon">
-    <link rel="apple-touch-icon" href="./images/apple-touch-icon.png">
-    
-    <!-- Meta tags -->
+    <!-- Otimizado para melhor performance -->
     <meta property="og:type" content="website">
     <meta property="og:title" content="A Realidade em Moçambique - Ajude as Crianças">
     <meta property="og:description" content="Milhares de crianças em Moçambique enfrentam fome e doenças graves. Sua doação pode salvar vidas através de alimentos, medicamentos e tratamentos. Ajude agora!">
-    <meta property="og:image" content="./images/bd056235-c6e6-456c-b0a7-41f6fde5ad05_1.jpeg">
+    <meta property="og:image" content="images/bd056235-c6e6-456c-b0a7-41f6fde5ad05_1.jpeg">
     
-    <!-- Fontes -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" href="images/favicon.ico" type="image/x-icon">
     
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        /* Reset e base */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background-color: #f8f9fa;
-            color: #333;
+            font-family: 'Lato', Arial, sans-serif;
             line-height: 1.6;
+            color: #333;
+            background: #f8f9fa;
         }
-
+        
+        /* Header */
         .header {
             background: #fff;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
@@ -42,22 +34,22 @@
             top: 0;
             z-index: 100;
         }
-
+        
         .header-content {
             max-width: 1200px;
             margin: 0 auto;
             padding: 0 20px;
             display: flex;
             align-items: center;
-            justify-content: center;
+            justify-content: space-between;
         }
-
+        
         .logo {
             display: flex;
             align-items: center;
             gap: 8px;
         }
-
+        
         .logo-icon {
             width: 32px;
             height: 32px;
@@ -70,135 +62,115 @@
             font-weight: bold;
             font-size: 18px;
         }
-
+        
         .logo-text {
             font-size: 20px;
             font-weight: 700;
             color: #22c55e;
         }
-
-        .container {
+        
+        /* Main content */
+        .main-container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 0 20px;
-        }
-
-        .main-content {
+            padding: 20px;
             display: grid;
             grid-template-columns: 1fr 400px;
             gap: 40px;
-            margin: 40px auto;
-            max-width: 1200px;
         }
-
+        
         .content-section {
             background: white;
             border-radius: 16px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-            overflow: hidden;
-        }
-
-        .video-container {
-            position: relative;
-            width: 100%;
-            height: 400px;
-            background: #000;
-            border-radius: 16px 16px 0 0;
-            overflow: hidden;
-        }
-
-        .vsl-video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            cursor: pointer;
-        }
-
-        .audio-indicator {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: rgba(0,0,0,0.7);
-            color: white;
-            padding: 8px 12px;
-            border-radius: 20px;
-            font-size: 14px;
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0% { opacity: 0.7; }
-            50% { opacity: 1; }
-            100% { opacity: 0.7; }
-        }
-
-        .content-text {
             padding: 30px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
         }
-
+        
         .campaign-header {
             text-align: center;
             margin-bottom: 30px;
         }
-
-        .campaign-subtitle {
+        
+        .campaign-category {
             color: #6b7280;
             font-size: 14px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
             margin-bottom: 8px;
         }
-
+        
         .campaign-title {
             font-size: 32px;
             font-weight: 700;
             color: #111827;
-            margin-bottom: 16px;
+            margin-bottom: 8px;
         }
-
+        
         .campaign-id {
             color: #6b7280;
             font-size: 14px;
         }
-
-        .description {
-            font-size: 16px;
-            line-height: 1.7;
-            color: #374151;
+        
+        /* Video container */
+        .video-container {
+            position: relative;
+            width: 100%;
+            height: 400px;
             margin-bottom: 30px;
+            border-radius: 12px;
+            overflow: hidden;
+            background: #f3f4f6;
         }
-
-        .description p {
-            margin-bottom: 16px;
+        
+        .video-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
         }
-
-        .description ul {
-            margin: 16px 0;
+        
+        /* Content text */
+        .content-text {
+            font-size: 16px;
+            line-height: 1.8;
+            color: #374151;
+        }
+        
+        .content-text h2 {
+            font-size: 24px;
+            font-weight: 600;
+            color: #111827;
+            margin: 30px 0 15px;
+        }
+        
+        .content-text ul {
+            margin: 20px 0;
             padding-left: 20px;
         }
-
-        .description li {
+        
+        .content-text li {
             margin-bottom: 8px;
         }
-
+        
+        /* Sidebar */
         .sidebar {
-            position: sticky;
-            top: 100px;
-            height: fit-content;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
         }
-
+        
         .donation-card {
             background: white;
             border-radius: 16px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-            overflow: hidden;
-        }
-
-        .progress-section {
             padding: 30px;
-            border-bottom: 1px solid #e5e7eb;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            position: sticky;
+            top: 100px;
         }
-
+        
+        .progress-section {
+            margin-bottom: 30px;
+        }
+        
         .progress-bar {
             width: 100%;
             height: 12px;
@@ -207,38 +179,34 @@
             overflow: hidden;
             margin-bottom: 20px;
         }
-
+        
         .progress-fill {
             height: 100%;
             background: #22c55e;
             width: 54%;
             transition: width 0.3s ease;
         }
-
-        .stats {
+        
+        .stats-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 20px;
             text-align: center;
         }
-
+        
         .stat-value {
             font-size: 24px;
             font-weight: 700;
             color: #22c55e;
             display: block;
         }
-
+        
         .stat-label {
             font-size: 14px;
             color: #6b7280;
             margin-top: 4px;
         }
-
-        .donate-section {
-            padding: 30px;
-        }
-
+        
         .donate-btn {
             width: 100%;
             background: #22c55e;
@@ -254,106 +222,59 @@
             display: block;
             text-align: center;
         }
-
+        
         .donate-btn:hover {
             background: #16a34a;
             transform: translateY(-1px);
         }
-
-        .security-info {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            margin-top: 16px;
+        
+        /* Creator info */
+        .creator-info {
+            background: #f9fafb;
+            border-radius: 12px;
+            padding: 20px;
+        }
+        
+        .creator-name {
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 4px;
+        }
+        
+        .creator-location {
+            color: #6b7280;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+        
+        .creator-stats {
             color: #6b7280;
             font-size: 14px;
         }
-
-        .footer-info {
-            background: white;
-            border-radius: 16px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-            padding: 30px;
-            margin-top: 40px;
-            text-align: center;
-        }
-
-        .share-section {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 16px;
-            margin-top: 20px;
-        }
-
-        .share-url {
-            flex: 1;
-            padding: 12px;
-            border: 2px solid #e5e7eb;
-            border-radius: 8px;
-            font-size: 14px;
-            text-align: center;
-            background: #f9fafb;
-        }
-
-        .copy-btn {
-            padding: 12px 20px;
-            background: #3b82f6;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 500;
-        }
-
-        .copy-btn:hover {
-            background: #2563eb;
-        }
-
-        /* Responsivo */
-        @media (max-width: 1024px) {
-            .main-content {
-                grid-template-columns: 1fr;
-                gap: 20px;
-            }
-
-            .sidebar {
-                position: static;
-            }
-        }
-
+        
+        /* Responsive */
         @media (max-width: 768px) {
-            .container {
-                padding: 0 16px;
+            .main-container {
+                grid-template-columns: 1fr;
+                padding: 16px;
             }
-
-            .main-content {
-                margin: 20px auto;
-            }
-
+            
             .campaign-title {
                 font-size: 24px;
             }
-
+            
             .video-container {
                 height: 250px;
             }
-
-            .content-text,
-            .progress-section,
-            .donate-section {
-                padding: 20px;
-            }
-
-            .stats {
-                grid-template-columns: 1fr;
-                gap: 16px;
+            
+            .donation-card {
+                position: static;
             }
         }
     </style>
 </head>
 <body>
+    <!-- Header -->
     <header class="header">
         <div class="header-content">
             <div class="logo">
@@ -363,181 +284,106 @@
         </div>
     </header>
 
-    <div class="container">
-        <div class="main-content">
-            <!-- Conteúdo Principal -->
-            <div class="content-section">
-                <div class="video-container">
-                    <video id="vslVideo" class="vsl-video" muted loop playsinline webkit-playsinline>
-                        <source src="./vsl/vsl.mp4" type="video/mp4">
-                        Seu navegador não suporta vídeo.
-                    </video>
-                    <div id="audioIndicator" class="audio-indicator" style="display: none;">
-                        🔊 Clique para ativar áudio
-                    </div>
-                </div>
-
-                <div class="content-text">
-                    <div class="campaign-header">
-                        <div class="campaign-subtitle">SAÚDE / TRATAMENTOS</div>
-                        <h1 class="campaign-title">A Realidade em Moçambique</h1>
-                        <div class="campaign-id">ID: 5529294</div>
-                    </div>
-
-                    <div class="description">
-                        <p><strong>A Realidade em Moçambique - Crianças Precisam de Ajuda</strong></p>
-                        
-                        <p>Enquanto você lê este texto, milhares de crianças em Moçambique enfrentam uma dor que não se pode descrever. Elas estão com fome, doentes, enfraquecidas, e muitas delas mal conseguem levantar da cama. A desnutrição grave, a falta de alimentos, de medicamentos e de tratamentos básicos está tirando a vida de inocentes todos os dias.</p>
-
-                        <p>Algumas dessas crianças têm apenas a pele e os ossos, choram por comida que não chega, ou lutam contra infecções graves sem nenhum tipo de medicamento ou curativo. É uma dor silenciosa, longe das câmeras, mas que não pode mais ser ignorada.</p>
-
-                        <p><strong>Para Onde Vai Sua Doação:</strong></p>
-                        <ul>
-                            <li>Compra de alimentos nutritivos para combater a desnutrição</li>
-                            <li>Medicamentos essenciais para tratar infecções e febres</li>
-                            <li>Transporte e tratamento médico para os casos mais urgentes</li>
-                            <li>Curativos e materiais hospitalares para crianças feridas e acamadas</li>
-                        </ul>
-
-                        <p>Clique no botão verde abaixo e escolha o valor da sua contribuição. A plataforma é segura e toda ajuda será destinada às equipes que estão atuando diretamente com as crianças em Moçambique.</p>
-
-                        <p>Mesmo a quilômetros de distância, sua compaixão pode alcançar o coração de uma criança faminta. Cada doação, cada compartilhamento, cada oração, tudo conta!</p>
-
-                        <p><strong>Sua doação é a diferença entre a fome e um prato de comida.</strong></p>
-                        <p><strong>É a diferença entre o abandono e a esperança</strong></p>
-
-                        <p>Cada real doado salva vidas em Moçambique, clique no botão verde e nos ajude!</p>
-                    </div>
-                </div>
+    <!-- Main Content -->
+    <div class="main-container">
+        <!-- Content Section -->
+        <div class="content-section">
+            <div class="campaign-header">
+                <div class="campaign-category">Saúde / Tratamentos</div>
+                <h1 class="campaign-title">A Realidade em Moçambique</h1>
+                <div class="campaign-id">ID: 5529294</div>
             </div>
 
-            <!-- Sidebar de Doação -->
-            <div class="sidebar">
-                <div class="donation-card">
-                    <div class="progress-section">
-                        <div class="progress-bar">
-                            <div class="progress-fill"></div>
-                        </div>
-                        <div class="stats">
-                            <div>
-                                <span class="stat-value">R$ 51.145,39</span>
-                                <div class="stat-label">Arrecadado</div>
-                            </div>
-                            <div>
-                                <span class="stat-value">821</span>
-                                <div class="stat-label">Apoiadores</div>
-                            </div>
-                        </div>
-                        <div style="text-align: center; margin-top: 16px; color: #6b7280; font-size: 14px;">
-                            Meta: R$ 95.000,00
-                        </div>
-                    </div>
+            <!-- YouTube Video -->
+            <div class="video-container">
+                <iframe 
+                    src="https://www.youtube.com/embed/T-h8_5ppz2g?autoplay=1&mute=1&loop=1&playlist=T-h8_5ppz2g&controls=1&rel=0&modestbranding=1&iv_load_policy=3"
+                    frameborder="0"
+                    allowfullscreen
+                    allow="autoplay; encrypted-media">
+                </iframe>
+            </div>
 
-                    <div class="donate-section">
-                        <a href="doacao.html" class="donate-btn">
-                            Quero Ajudar
-                        </a>
-                        
-                        <div class="security-info">
-                            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-                                <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zM3 7v4a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V7a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1z"/>
-                            </svg>
-                            Pagamento 100% seguro via PIX
-                        </div>
-                    </div>
-                </div>
+            <!-- Content Text -->
+            <div class="content-text">
+                <p>Enquanto você lê este texto, milhares de crianças em Moçambique enfrentam uma dor que não se pode descrever. Elas estão com fome, doentes, enfraquecidas, e muitas delas mal conseguem levantar da cama. A desnutrição grave, a falta de alimentos, de medicamentos e de tratamentos básicos está tirando a vida de inocentes todos os dias.</p>
 
-                <!-- Informações do Criador -->
-                <div style="background: white; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); padding: 20px; margin-top: 20px;">
-                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
-                        <div style="width: 40px; height: 40px; background: #f59e0b; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">
-                            DA
-                        </div>
-                        <div>
-                            <div style="font-weight: 600; color: #111827;">Daniel</div>
-                            <div style="font-size: 14px; color: #6b7280;">Varjota / CE</div>
-                        </div>
-                    </div>
-                    <div style="font-size: 14px; color: #6b7280;">
-                        Ativo(a) no Vakinha desde maio/2025<br>
-                        <strong>2 vaquinhas criadas • 1 vaquinha apoiada</strong>
-                    </div>
-                </div>
+                <p>Algumas dessas crianças têm apenas a pele e os ossos, choram por comida que não chega, ou lutam contra infecções graves sem nenhum tipo de medicamento ou curativo. É uma dor silenciosa, longe das câmeras, mas que não pode mais ser ignorada.</p>
+
+                <h2>Para Onde Vai Sua Doação?</h2>
+
+                <p>Tudo que for arrecadado será utilizado diretamente para salvar vidas:</p>
+                <ul>
+                    <li>Compra de alimentos nutritivos para combater a desnutrição;</li>
+                    <li>Medicamentos essenciais para tratar infecções e febres;</li>
+                    <li>Curativos e materiais hospitalares para crianças feridas e acamadas;</li>
+                    <li>Transporte e tratamento médico para os casos mais urgentes.</li>
+                </ul>
+
+                <h2>Como Você Pode Ajudar?</h2>
+
+                <p>Cada real doado se transforma em esperança.</p>
+                <p>Clique no botão verde ao lado e escolha o valor da sua contribuição.</p>
+
+                <p>A plataforma é segura e toda ajuda será destinada às equipes que estão atuando diretamente com as crianças em Moçambique.</p>
+
+                <h2>Nosso Agradecimento</h2>
+
+                <p>Mesmo a quilômetros de distância, sua compaixão pode alcançar o coração de uma criança faminta. Cada doação, cada compartilhamento, cada oração — tudo conta.</p>
             </div>
         </div>
 
-        <!-- Seção de Compartilhamento -->
-        <div class="footer-info">
-            <h3 style="margin-bottom: 16px; color: #111827;">COMPARTILHE ESTA VAQUINHA</h3>
-            <div class="share-section">
-                <input type="text" class="share-url" value="https://vakinhadaafrica.site" readonly>
-                <button class="copy-btn" onclick="copyUrl()">📋 Copiar</button>
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="donation-card">
+                <div class="progress-section">
+                    <div class="progress-bar">
+                        <div class="progress-fill"></div>
+                    </div>
+                    <div class="stats-grid">
+                        <div>
+                            <span class="stat-value">R$ 51.145,39</span>
+                            <div class="stat-label">Arrecadado</div>
+                        </div>
+                        <div>
+                            <span class="stat-value">821</span>
+                            <div class="stat-label">Apoiadores</div>
+                        </div>
+                    </div>
+                </div>
+
+                <a href="doacao.html" class="donate-btn">Quero Ajudar</a>
             </div>
-            <div style="margin-top: 20px; color: #6b7280; font-size: 14px;">
-                ✅ DOAÇÃO PROTEGIDA • 7231 corações recebidos ❤️
+
+            <div class="creator-info">
+                <div class="creator-name">Daniel</div>
+                <div class="creator-location">Varjota / CE</div>
+                <div class="creator-stats">
+                    <strong>Ativo(a) no Vakinha desde maio/2025</strong><br>
+                    2 vaquinhas criadas • 1 vaquinha apoiada
+                </div>
             </div>
         </div>
     </div>
 
     <script>
-        // Script otimizado para VSL
-        document.addEventListener('DOMContentLoaded', function() {
-            const video = document.getElementById('vslVideo');
-            const audioIndicator = document.getElementById('audioIndicator');
+        // YouTube VSL Integration - Otimizado e Limpo
+        (function() {
+            'use strict';
             
-            // Tentar reproduzir o vídeo automaticamente
-            function playVideo() {
-                video.muted = true;
-                video.play().then(() => {
-                    console.log('Vídeo reproduzindo automaticamente');
-                    audioIndicator.style.display = 'block';
-                }).catch(error => {
-                    console.log('Autoplay bloqueado:', error);
-                    audioIndicator.style.display = 'block';
-                });
-            }
+            console.log('✅ Página otimizada carregada com YouTube VSL');
             
-            // Ativar áudio quando clicar no vídeo
-            video.addEventListener('click', function() {
-                if (video.muted) {
-                    video.muted = false;
-                    audioIndicator.style.display = 'none';
-                    console.log('Áudio ativado');
-                } else {
-                    video.muted = true;
-                    audioIndicator.style.display = 'block';
-                    console.log('Áudio desativado');
+            // Garantir que o botão redireciona corretamente
+            document.addEventListener('DOMContentLoaded', function() {
+                const donateBtn = document.querySelector('.donate-btn');
+                if (donateBtn) {
+                    donateBtn.addEventListener('click', function(e) {
+                        console.log('Redirecionando para página de doação...');
+                    });
                 }
             });
             
-            // Ativar áudio quando clicar no indicador
-            audioIndicator.addEventListener('click', function() {
-                video.muted = false;
-                audioIndicator.style.display = 'none';
-                console.log('Áudio ativado via indicador');
-            });
-            
-            // Tentar reproduzir após carregar
-            if (video.readyState >= 2) {
-                playVideo();
-            } else {
-                video.addEventListener('loadeddata', playVideo);
-            }
-        });
-        
-        // Função para copiar URL
-        function copyUrl() {
-            const urlInput = document.querySelector('.share-url');
-            urlInput.select();
-            document.execCommand('copy');
-            
-            const copyBtn = document.querySelector('.copy-btn');
-            const originalText = copyBtn.textContent;
-            copyBtn.textContent = '✅ Copiado!';
-            setTimeout(() => {
-                copyBtn.textContent = originalText;
-            }, 2000);
-        }
+        })();
     </script>
 </body>
 </html>
