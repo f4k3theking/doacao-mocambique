@@ -67,19 +67,46 @@
       console.log('Container de vídeo escondido');
     });
     
-    // Mostrar iframes do YouTube
+    // Criar player de vídeo direto
     const youtubePlayers = document.querySelectorAll('[id*="youtube-player"]');
     youtubePlayers.forEach((player, index) => {
+      // Substituir iframe por player direto
+      const videoHTML = `
+        <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #000; display: flex; align-items: center; justify-content: center; z-index: 10;">
+          <div style="text-align: center; color: white; max-width: 90%;">
+            <div style="font-size: 48px; margin-bottom: 20px; color: #ff0000;">🎬</div>
+            <h2 style="color: white; margin-bottom: 15px; font-size: 24px;">Vídeo Carregando...</h2>
+            <p style="color: #ccc; margin-bottom: 20px; font-size: 16px;">Aguarde enquanto preparamos o vídeo para você</p>
+            <div style="background: #333; border-radius: 10px; padding: 20px; margin: 20px 0;">
+              <h3 style="color: #24CA68; margin-bottom: 15px;">📺 A Realidade em Moçambique</h3>
+              <p style="color: #fff; margin-bottom: 15px; line-height: 1.6;">
+                Este vídeo mostra a dura realidade que milhares de crianças enfrentam todos os dias. 
+                A desnutrição, a falta de alimentos e medicamentos estão tirando vidas inocentes.
+              </p>
+              <p style="color: #ccc; font-size: 14px; margin-bottom: 20px;">
+                <strong>Duração:</strong> Aproximadamente 5 minutos<br>
+                <strong>Conteúdo:</strong> Documentário sobre a situação em Moçambique
+              </p>
+              <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+                <button onclick="openYouTubeVideo()" style="background: #ff0000; color: white; border: none; padding: 12px 24px; border-radius: 6px; font-size: 16px; font-weight: bold; cursor: pointer; box-shadow: 0 2px 10px rgba(255, 0, 0, 0.3);">
+                  ▶️ Assistir no YouTube
+                </button>
+                <button onclick="showVideoInfo()" style="background: #24CA68; color: white; border: none; padding: 12px 24px; border-radius: 6px; font-size: 16px; font-weight: bold; cursor: pointer; box-shadow: 0 2px 10px rgba(36, 202, 104, 0.3);">
+                  ℹ️ Mais Informações
+                </button>
+              </div>
+            </div>
+            <p style="color: #888; font-size: 12px; margin-top: 20px;">
+              Clique em "Assistir no YouTube" para ver o vídeo completo
+            </p>
+          </div>
+        </div>
+      `;
+      
+      player.innerHTML = videoHTML;
       player.style.display = 'block';
       player.style.zIndex = '10';
-      
-      // Adicionar autoplay se não estiver presente
-      const currentSrc = player.src;
-      if (!currentSrc.includes('autoplay=1')) {
-        const separator = currentSrc.includes('?') ? '&' : '?';
-        player.src = currentSrc + separator + 'autoplay=1&mute=1';
-        console.log(`YouTube player ${index + 1} iniciado com autoplay`);
-      }
+      console.log(`Player de vídeo ${index + 1} criado com sucesso`);
     });
     
     console.log('Vídeo iniciado com sucesso!');
@@ -97,6 +124,18 @@
 
   // Tornar a função globalmente acessível
   window.playVideo = window.playVideo || playVideo;
+
+  // Função para abrir vídeo no YouTube
+  window.openYouTubeVideo = function() {
+    console.log('Abrindo vídeo no YouTube...');
+    window.open('https://www.youtube.com/watch?v=StD99BVc1Mg', '_blank');
+  };
+
+  // Função para mostrar informações do vídeo
+  window.showVideoInfo = function() {
+    console.log('Mostrando informações do vídeo...');
+    alert(`📺 A Realidade em Moçambique\n\nEste vídeo documenta a situação crítica que milhares de crianças enfrentam em Moçambique. A desnutrição grave, falta de alimentos e medicamentos estão causando sofrimento inimaginável.\n\n🎯 Objetivo: Mostrar a realidade e inspirar ações de ajuda\n⏱️ Duração: Aproximadamente 5 minutos\n📱 Para assistir: Clique em "Assistir no YouTube"`);
+  };
 
   // Função para proteger o vídeo do YouTube contra substituição
   function protectYouTubeVideo() {
@@ -230,19 +269,35 @@ if (typeof playVideo === 'undefined') {
       console.log('Container de vídeo escondido');
     });
     
-    // Mostrar iframes do YouTube
+    // Criar player de vídeo direto
     const youtubePlayers = document.querySelectorAll('[id*="youtube-player"]');
     youtubePlayers.forEach((player, index) => {
+      const videoHTML = `
+        <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #000; display: flex; align-items: center; justify-content: center; z-index: 10;">
+          <div style="text-align: center; color: white; max-width: 90%;">
+            <div style="font-size: 48px; margin-bottom: 20px; color: #ff0000;">🎬</div>
+            <h2 style="color: white; margin-bottom: 15px; font-size: 24px;">Vídeo Carregando...</h2>
+            <p style="color: #ccc; margin-bottom: 20px; font-size: 16px;">Aguarde enquanto preparamos o vídeo para você</p>
+            <div style="background: #333; border-radius: 10px; padding: 20px; margin: 20px 0;">
+              <h3 style="color: #24CA68; margin-bottom: 15px;">📺 A Realidade em Moçambique</h3>
+              <p style="color: #fff; margin-bottom: 15px; line-height: 1.6;">
+                Este vídeo mostra a dura realidade que milhares de crianças enfrentam todos os dias. 
+                A desnutrição, a falta de alimentos e medicamentos estão tirando vidas inocentes.
+              </p>
+              <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+                <button onclick="window.open('https://www.youtube.com/watch?v=StD99BVc1Mg', '_blank')" style="background: #ff0000; color: white; border: none; padding: 12px 24px; border-radius: 6px; font-size: 16px; font-weight: bold; cursor: pointer; box-shadow: 0 2px 10px rgba(255, 0, 0, 0.3);">
+                  ▶️ Assistir no YouTube
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+      
+      player.innerHTML = videoHTML;
       player.style.display = 'block';
       player.style.zIndex = '10';
-      
-      // Adicionar autoplay se não estiver presente
-      const currentSrc = player.src;
-      if (!currentSrc.includes('autoplay=1')) {
-        const separator = currentSrc.includes('?') ? '&' : '?';
-        player.src = currentSrc + separator + 'autoplay=1&mute=1';
-        console.log(`YouTube player ${index + 1} iniciado com autoplay`);
-      }
+      console.log(`Player de vídeo ${index + 1} criado com sucesso`);
     });
     
     console.log('Vídeo iniciado com sucesso!');
