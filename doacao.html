@@ -567,10 +567,12 @@
                 });
 
                 const data = await response.json();
+                console.log('Resposta da API PIX:', data);
                 
                 if (data.success) {
                     showPixModal(data);
                 } else {
+                    console.error('Erro da API PIX:', data);
                     alert('Erro ao gerar PIX: ' + (data.error || 'Erro desconhecido'));
                 }
             } catch (error) {
@@ -583,18 +585,57 @@
         }
 
         function showPixModal(pixData) {
+            console.log('Dados PIX recebidos:', pixData);
+            
             document.getElementById('pixAmount').textContent = `R$ ${pixData.amount.toFixed(2).replace('.', ',')}`;
             
-            // QR Code (se disponível)
+            // QR Code (verificar ambos os campos possíveis)
             const qrContainer = document.getElementById('qrCode');
-            if (pixData.pix_qr_code) {
-                qrContainer.innerHTML = `<img src="${pixData.pix_qr_code}" alt="QR Code PIX" style="width: 100%; height: 100%; object-fit: contain;">`;
+            const qrCodeUrl = pixData.pix_qr_code || pixData.qr_code || pixData.image;
+            
+            console.log('URL do QR Code:', qrCodeUrl);
+            
+            if (qrCodeUrl) {
+                const img = document.createElement('img');
+                img.style.cssText = 'width: 100%; height: 100%; object-fit: contain;';
+                img.alt = 'QR Code PIX';
+                
+                img.onload = function() {
+                    console.log('✅ QR Code carregado com sucesso!');
+                };
+                
+                img.onerror = function() {
+                    console.log('❌ Erro ao carregar QR Code da API, gerando fallback...');
+                    // Se falhar, tentar gerar QR Code usando serviço alternativo
+                    const pixCodeForFallback = pixData.pix_code || pixData.code || '';
+                    const fallbackUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(pixCodeForFallback)}`;
+                    this.src = fallbackUrl;
+                    
+                    this.onerror = function() {
+                        console.log('❌ Fallback também falhou');
+                        qrContainer.innerHTML = '<span style="color: #6b7280;">QR Code temporariamente indisponível</span>';
+                    };
+                };
+                
+                img.src = qrCodeUrl;
+                qrContainer.innerHTML = '';
+                qrContainer.appendChild(img);
             } else {
-                qrContainer.innerHTML = '<span>QR Code não disponível</span>';
+                console.log('QR Code não encontrado nos dados, gerando com serviço externo...');
+                // Se não vier QR Code da API, gerar um usando serviço público
+                const pixCode = pixData.pix_code || pixData.code || '';
+                if (pixCode) {
+                    const externalQrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(pixCode)}`;
+                    qrContainer.innerHTML = `<img src="${externalQrUrl}" alt="QR Code PIX" style="width: 100%; height: 100%; object-fit: contain;" onload="console.log('QR Code externo carregado!')" onerror="this.parentNode.innerHTML = '<span style=color:#6b7280;>QR Code indisponível</span>'">`;
+                } else {
+                    qrContainer.innerHTML = '<span style="color: #6b7280;">QR Code não disponível</span>';
+                }
             }
             
             // Código PIX
-            document.getElementById('pixCode').textContent = pixData.pix_code || 'Código não disponível';
+            const pixCode = pixData.pix_code || pixData.code || 'Código não disponível';
+            console.log('Código PIX:', pixCode);
+            document.getElementById('pixCode').textContent = pixCode;
             
             // Mostrar modal
             document.getElementById('pixModal').style.display = 'block';
