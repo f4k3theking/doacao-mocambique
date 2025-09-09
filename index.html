@@ -130,46 +130,79 @@
         }
     }
     
-    // Função principal para substituir imagens
+    // Função principal para substituir imagens por YouTube
     function replaceImagesWithVideo() {
+        console.log('Executando substituição por YouTube embed');
         // Procurar por imagens específicas
         const images = document.querySelectorAll('img[src*="bd056235-c6e6-456c-b0a7-41f6fde5ad05"]:not([src*="images/bd056235-c6e6-456c-b0a7-41f6fde5ad05_1.jpeg"])');
         
         images.forEach(img => {
             if (!img.hasAttribute('data-replaced')) {
-                console.log('Substituindo imagem por VSL:', img.src);
-                const video = createVideo(img);
+                console.log('Substituindo imagem por YouTube VSL:', img.src);
+                
+                // Criar container para o YouTube
+                const container = document.createElement('div');
+                container.style.cssText = 'position: relative; width: 100%; height: 400px; background: #000;';
+                
+                // Criar iframe do YouTube
+                const iframe = document.createElement('iframe');
+                iframe.src = 'https://www.youtube.com/embed/StD99BVc1Mg?autoplay=1&mute=1&loop=1&playlist=StD99BVc1Mg&controls=0&showinfo=0&rel=0&modestbranding=1&iv_load_policy=3&fs=0&disablekb=1';
+                iframe.width = '100%';
+                iframe.height = '100%';
+                iframe.frameBorder = '0';
+                iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+                iframe.allowFullscreen = true;
+                iframe.style.cssText = 'position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;';
+                iframe.setAttribute('data-vsl', 'true');
+                iframe.setAttribute('data-youtube', 'true');
+                
+                container.appendChild(iframe);
                 
                 // Marcar como substituída
                 img.setAttribute('data-replaced', 'true');
                 img.style.display = 'none';
                 
-                // Inserir vídeo
+                // Inserir container
                 if (img.parentNode) {
                     img.parentNode.style.position = 'relative';
-                    img.parentNode.insertBefore(video, img);
+                    img.parentNode.insertBefore(container, img);
+                    console.log('YouTube iframe inserido com sucesso!');
                 }
             }
         });
         
-        // Procurar por containers específicos e forçar vídeo
+        // Procurar por containers específicos e forçar YouTube
         const containers = document.querySelectorAll('.sc-80ea7b36-3.knWfgS, figure[role="button"]');
         containers.forEach(container => {
-            if (!container.querySelector('video[data-vsl="true"]')) {
+            if (!container.querySelector('iframe[data-vsl="true"]')) {
                 const existingImg = container.querySelector('img');
-                if (existingImg) {
-                    console.log('Forçando vídeo em container');
-                    const video = createVideo(existingImg);
+                if (existingImg && existingImg.src && existingImg.src.includes('bd056235-c6e6-456c-b0a7-41f6fde5ad05')) {
+                    console.log('Forçando YouTube em container');
+                    
+                    // Criar iframe do YouTube
+                    const iframe = document.createElement('iframe');
+                    iframe.src = 'https://www.youtube.com/embed/StD99BVc1Mg?autoplay=1&mute=1&loop=1&playlist=StD99BVc1Mg&controls=0&showinfo=0&rel=0&modestbranding=1&iv_load_policy=3&fs=0&disablekb=1';
+                    iframe.width = '100%';
+                    iframe.height = '100%';
+                    iframe.frameBorder = '0';
+                    iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+                    iframe.allowFullscreen = true;
+                    iframe.style.cssText = 'position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;';
+                    iframe.setAttribute('data-vsl', 'true');
+                    iframe.setAttribute('data-youtube', 'true');
+                    
                     container.style.position = 'relative';
-                    container.appendChild(video);
+                    container.style.height = '400px';
+                    container.appendChild(iframe);
                     if (existingImg) existingImg.style.display = 'none';
+                    console.log('YouTube iframe adicionado ao container!');
                 }
             }
         });
     }
     
-    // Interceptar criação de elementos img
-    const originalCreateElement = document.createElement;
+    // Interceptar criação de elementos img - DESABILITADO PARA YOUTUBE
+    /*const originalCreateElement = document.createElement;
     document.createElement = function(tagName) {
         const element = originalCreateElement.call(this, tagName);
         
@@ -193,7 +226,7 @@
         }
         
         return element;
-    };
+    };*/
     
     // Observador de mutações para detectar mudanças no DOM
     const observer = new MutationObserver(function(mutations) {
@@ -1290,8 +1323,8 @@ data-styled.g530[id="sc-d7b38ab6-6"]{content:"joNfNJ,jMkzlc,"}/*!sc*/
 
 <p>Mesmo a quilômetros de distância, sua compaixão pode alcançar o coração de uma criança faminta. Cada doação, cada compartilhamento, cada oração — tudo conta.</p>
 
-<figure class="image image_resized">
-  <iframe src="https://www.youtube.com/embed/StD99BVc1Mg?autoplay=1&mute=1&loop=1&playlist=StD99BVc1Mg&controls=0&showinfo=0&rel=0&modestbranding=1&iv_load_policy=3&fs=0&disablekb=1" width="100%" height="100%" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen style="object-fit:cover; width: 100%; height: 100%;" data-vsl="true" data-youtube="true"></iframe>
+<figure class="image image_resized" style="height: 400px; position: relative;">
+  <iframe src="https://www.youtube.com/embed/StD99BVc1Mg?autoplay=1&mute=1&loop=1&playlist=StD99BVc1Mg&controls=0&showinfo=0&rel=0&modestbranding=1&iv_load_policy=3&fs=0&disablekb=1" width="100%" height="100%" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;" data-vsl="true" data-youtube="true"></iframe>
 </figure>
 
 
