@@ -440,8 +440,57 @@
     };
     
     document.addEventListener('click', enableAutoplayOnInteraction);
-    document.addEventListener('touchstart', enableAutoplayOnInteraction);
-    document.addEventListener('keydown', enableAutoplayOnInteraction);
+  document.addEventListener('touchstart', enableAutoplayOnInteraction);
+  document.addEventListener('keydown', enableAutoplayOnInteraction);
+  
+  // BLOQUEAR NAVEGAÇÃO - INTERCEPTAR CLIQUES EM LINKS DO MENU
+  function preventMenuNavigation(e) {
+    const target = e.target.closest('a');
+    
+    if (target && target.href) {
+      // Lista de URLs e padrões para bloquear
+      const blockedPatterns = [
+        '/como-ajudar',
+        '/descubra', 
+        '/como-funciona',
+        '/buscar',
+        '/minha-conta',
+        '/criar-vaquinha',
+        '/usuario/',
+        'vakinha.com.br',
+        // Links que levam para páginas que não existem no site baixado
+        'http://',
+        'https://'
+      ];
+      
+      // Permitir apenas overlay do vídeo e botões de doação
+      if (target.closest('.audio-activation-overlay') || 
+          target.closest('.sc-eldPxv.gEHdXN') ||
+          target.closest('.mobile-donation-button') ||
+          target.closest('.pix-copy-btn') ||
+          target.closest('.pix-donate-btn')) {
+        return; // Permitir estes elementos
+      }
+      
+      // Verificar se o link deve ser bloqueado
+      const shouldBlock = blockedPatterns.some(pattern => 
+        target.href.includes(pattern) || 
+        target.getAttribute('href')?.includes(pattern)
+      );
+      
+      if (shouldBlock || target.href !== window.location.href + '#') {
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+        console.log('Navegação bloqueada:', target.href);
+        return false;
+      }
+    }
+  }
+  
+  // Adicionar interceptador global
+  document.addEventListener('click', preventMenuNavigation, true);
+  document.addEventListener('mousedown', preventMenuNavigation, true);
     
 })();
 </script><style id="__jsx-3243365948">html{font-family:'Lato', 'Lato Fallback', arial,'Montserrat', 'Montserrat Fallback', arial}</style>
@@ -544,6 +593,50 @@ img[src*="bd056235-c6e6-456c-b0a7-41f6fde5ad05"]:not([src*="images/bd056235-c6e6
     margin: 0 auto !important;
 }
 
+/* DESABILITAR NAVEGAÇÃO - BOTÕES DO MENU */
+/* Como ajudar, Descubra, Como funciona, Buscar, Minha conta, Criar vaquinha */
+a[href="/como-ajudar"], a[href*="como-ajudar"],
+a[href="/descubra"], a[href*="descubra"], 
+a[href="/como-funciona"], a[href*="como-funciona"],
+a[href="/buscar"], a[href*="buscar"],
+a[href="/minha-conta"], a[href*="minha-conta"], a[href*="conta"],
+a[href="/criar-vaquinha"], a[href*="criar-vaquinha"], a[href*="criar"],
+/* Links genéricos do menu */
+a[href="/"], a[href="#"],
+/* Links para perfis de usuário */
+a[href*="/usuario/"], 
+/* Outros links de navegação */
+nav a, .nav a, [class*="nav"] a,
+/* Botões do menu mobile/burger */
+.bm-item-list a,
+/* Ícones de busca e menu */
+[data-testid="SearchIcon"], [data-testid="NotesIcon"] {
+    pointer-events: none !important;
+    cursor: default !important;
+    color: #999 !important;
+    text-decoration: none !important;
+    opacity: 0.7 !important;
+}
+
+/* Desabilitar botões específicos do header */
+button[id*="react-burger"], [class*="burger"] button,
+.sc-jXbUNg a, .sc-2e804785 a,
+/* Desabilitar ícones SVG clicáveis */
+svg[data-testid="SearchIcon"], svg[data-testid="NotesIcon"] {
+    pointer-events: none !important;
+    cursor: default !important;
+    opacity: 0.7 !important;
+}
+
+/* Manter apenas overlay do vídeo funcional */
+.audio-activation-overlay, .audio-activation-overlay *,
+/* Manter botões de doação funcionais */
+.sc-eldPxv.gEHdXN, .mobile-donation-button,
+.pix-copy-btn, .pix-donate-btn {
+    pointer-events: auto !important;
+    cursor: pointer !important;
+    opacity: 1 !important;
+}
 
 .audio-prompt h3 {
     margin: 0 0 8px 0 !important;
