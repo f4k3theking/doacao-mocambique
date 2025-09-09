@@ -7,7 +7,7 @@
     // Função para criar e inserir o vídeo
     function createVideo(targetElement) {
         const video = document.createElement('video');
-        video.src = 'vsl/vsl.mp4';
+        // Agora usando YouTube embed - src configurado diretamente no HTML
         video.controls = false;
         video.autoplay = true;
         video.muted = true; // Iniciar mutado para permitir autoplay
@@ -360,6 +360,20 @@
 })();
 </script><style id="__jsx-3243365948">html{font-family:'Lato', 'Lato Fallback', arial,'Montserrat', 'Montserrat Fallback', arial}</style>
 <style>
+/* CSS para garantir que a VSL do YouTube seja exibida corretamente */
+iframe[data-youtube="true"], iframe[data-vsl="true"] {
+    display: block !important;
+    width: 100% !important;
+    height: 100% !important;
+    border: none !important;
+    cursor: pointer !important;
+    pointer-events: auto !important;
+    -webkit-user-select: none !important;
+    -moz-user-select: none !important;
+    -ms-user-select: none !important;
+    user-select: none !important;
+}
+
 /* CSS para garantir que a VSL seja exibida corretamente */
 video[src*="vsl.mp4"] {
     display: block !important;
@@ -1277,7 +1291,7 @@ data-styled.g530[id="sc-d7b38ab6-6"]{content:"joNfNJ,jMkzlc,"}/*!sc*/
 <p>Mesmo a quilômetros de distância, sua compaixão pode alcançar o coração de uma criança faminta. Cada doação, cada compartilhamento, cada oração — tudo conta.</p>
 
 <figure class="image image_resized">
-  <video src="vsl/vsl.mp4" autoplay muted loop style="object-fit:cover; width: 100%; height: 100%;" data-audio-pending="true" data-vsl="true"></video>
+  <iframe src="https://www.youtube.com/embed/StD99BVc1Mg?autoplay=1&mute=1&loop=1&playlist=StD99BVc1Mg&controls=0&showinfo=0&rel=0&modestbranding=1&iv_load_policy=3&fs=0&disablekb=1" width="100%" height="100%" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen style="object-fit:cover; width: 100%; height: 100%;" data-vsl="true" data-youtube="true"></iframe>
 </figure>
 
 
