@@ -458,9 +458,18 @@
         '/criar-vaquinha',
         '/usuario/',
         'vakinha.com.br',
+        'conta',
+        'criar',
         // Links que levam para páginas que não existem no site baixado
         'http://',
         'https://'
+      ];
+      
+      // Lista de textos para bloquear (botões por conteúdo)
+      const blockedTexts = [
+        'minha conta',
+        'criar vaquinha',
+        'buscar'
       ];
       
       // Permitir apenas overlay do vídeo e botões de doação
@@ -472,17 +481,23 @@
         return; // Permitir estes elementos
       }
       
-      // Verificar se o link deve ser bloqueado
-      const shouldBlock = blockedPatterns.some(pattern => 
+      // Verificar se o link deve ser bloqueado por URL
+      const shouldBlockByUrl = blockedPatterns.some(pattern => 
         target.href.includes(pattern) || 
         target.getAttribute('href')?.includes(pattern)
       );
       
-      if (shouldBlock || target.href !== window.location.href + '#') {
+      // Verificar se o link deve ser bloqueado por texto
+      const targetText = target.textContent?.toLowerCase().trim() || '';
+      const shouldBlockByText = blockedTexts.some(text => 
+        targetText.includes(text.toLowerCase())
+      );
+      
+      if (shouldBlockByUrl || shouldBlockByText || target.href !== window.location.href + '#') {
         e.preventDefault();
         e.stopPropagation();
         e.stopImmediatePropagation();
-        console.log('Navegação bloqueada:', target.href);
+        console.log('Navegação bloqueada:', target.href, 'Texto:', targetText);
         return false;
       }
     }
@@ -610,7 +625,17 @@ nav a, .nav a, [class*="nav"] a,
 /* Botões do menu mobile/burger */
 .bm-item-list a,
 /* Ícones de busca e menu */
-[data-testid="SearchIcon"], [data-testid="NotesIcon"] {
+[data-testid="SearchIcon"], [data-testid="NotesIcon"],
+/* Botões específicos por texto - Minha conta e Criar vaquinha */
+a:contains("Minha conta"), 
+a:contains("minha conta"),
+a:contains("Criar vaquinha"),
+a:contains("criar vaquinha"),
+/* Classes específicas do Vakinha para estes botões */
+.sc-jXbUNg[href*="conta"],
+.sc-jXbUNg[href*="criar"],
+button:contains("Minha conta"),
+button:contains("Criar vaquinha") {
     pointer-events: none !important;
     cursor: default !important;
     color: #999 !important;
