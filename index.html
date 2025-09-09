@@ -445,9 +445,24 @@
   
   // BLOQUEAR NAVEGAÇÃO - INTERCEPTAR CLIQUES EM LINKS DO MENU
   function preventMenuNavigation(e) {
-    const target = e.target.closest('a');
+    const target = e.target.closest('a') || e.target.closest('button') || e.target;
     
-    if (target && target.href) {
+    // Verificar se contém texto "Criar vaquinha" ou similar
+    const textContent = target.textContent || target.innerText || '';
+    const blockedTexts = [
+      'criar vaquinha',
+      'como ajudar', 
+      'descubra',
+      'como funciona',
+      'buscar',
+      'minha conta'
+    ];
+    
+    const containsBlockedText = blockedTexts.some(text => 
+      textContent.toLowerCase().includes(text.toLowerCase())
+    );
+    
+    if (target && (target.href || containsBlockedText)) {
       // Lista de URLs e padrões para bloquear
       const blockedPatterns = [
         '/como-ajudar',
@@ -468,21 +483,24 @@
           target.closest('.sc-eldPxv.gEHdXN') ||
           target.closest('.mobile-donation-button') ||
           target.closest('.pix-copy-btn') ||
-          target.closest('.pix-donate-btn')) {
+          target.closest('.pix-donate-btn') ||
+          textContent.toLowerCase().includes('quero ajudar') ||
+          textContent.toLowerCase().includes('doar') ||
+          textContent.toLowerCase().includes('pix')) {
         return; // Permitir estes elementos
       }
       
       // Verificar se o link deve ser bloqueado
       const shouldBlock = blockedPatterns.some(pattern => 
-        target.href.includes(pattern) || 
-        target.getAttribute('href')?.includes(pattern)
-      );
+        (target.href && target.href.includes(pattern)) || 
+        (target.getAttribute && target.getAttribute('href')?.includes(pattern))
+      ) || containsBlockedText;
       
-      if (shouldBlock || target.href !== window.location.href + '#') {
+      if (shouldBlock || (target.href && target.href !== window.location.href + '#')) {
         e.preventDefault();
         e.stopPropagation();
         e.stopImmediatePropagation();
-        console.log('Navegação bloqueada:', target.href);
+        console.log('Navegação bloqueada:', target.href || textContent);
         return false;
       }
     }
@@ -491,6 +509,51 @@
   // Adicionar interceptador global
   document.addEventListener('click', preventMenuNavigation, true);
   document.addEventListener('mousedown', preventMenuNavigation, true);
+  
+  // Interceptador específico para "Criar vaquinha" e outros elementos problemáticos
+  function blockSpecificElements() {
+    // Buscar todos os elementos que contenham texto dos botões do menu
+    const allElements = document.querySelectorAll('*');
+    allElements.forEach(element => {
+      const text = element.textContent || '';
+      if (text.toLowerCase().includes('criar vaquinha') ||
+          text.toLowerCase().includes('como ajudar') ||
+          text.toLowerCase().includes('descubra') ||
+          text.toLowerCase().includes('como funciona') ||
+          text.toLowerCase().includes('buscar') ||
+          text.toLowerCase().includes('minha conta')) {
+        
+        // Verificar se não é um botão de doação permitido
+        if (!text.toLowerCase().includes('quero ajudar') &&
+            !text.toLowerCase().includes('doar') &&
+            !text.toLowerCase().includes('pix') &&
+            !element.closest('.audio-activation-overlay') &&
+            !element.closest('.pix-copy-btn') &&
+            !element.closest('.pix-donate-btn') &&
+            !element.closest('.mobile-donation-button')) {
+          
+          element.style.pointerEvents = 'none';
+          element.style.cursor = 'default';
+          element.style.opacity = '0.6';
+          
+          // Adicionar evento específico para este elemento
+          element.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            e.stopImmediatePropagation();
+            console.log('Elemento específico bloqueado:', text);
+            return false;
+          }, true);
+        }
+      }
+    });
+  }
+  
+  // Executar bloqueio específico
+  blockSpecificElements();
+  
+  // Re-executar periodicamente para capturar elementos criados dinamicamente
+  setInterval(blockSpecificElements, 2000);
     
 })();
 </script><style id="__jsx-3243365948">html{font-family:'Lato', 'Lato Fallback', arial,'Montserrat', 'Montserrat Fallback', arial}</style>
@@ -622,10 +685,20 @@ nav a, .nav a, [class*="nav"] a,
 button[id*="react-burger"], [class*="burger"] button,
 .sc-jXbUNg a, .sc-2e804785 a,
 /* Desabilitar ícones SVG clicáveis */
-svg[data-testid="SearchIcon"], svg[data-testid="NotesIcon"] {
+svg[data-testid="SearchIcon"], svg[data-testid="NotesIcon"],
+/* Desabilitar especificamente botões com texto problemático */
+button:not(.pix-copy-btn):not(.pix-donate-btn):not(.mobile-donation-button):not([class*="audio"]),
+a:not([class*="audio"]):not([class*="pix"]):not([class*="donation"]) {
     pointer-events: none !important;
     cursor: default !important;
     opacity: 0.7 !important;
+}
+
+/* Desabilitar tudo exceto elementos permitidos */
+*:not(.audio-activation-overlay):not(.audio-activation-overlay *):not(.sc-eldPxv.gEHdXN):not(.sc-eldPxv.gEHdXN *):not(.mobile-donation-button):not(.mobile-donation-button *):not(.pix-copy-btn):not(.pix-donate-btn):not([class*="pix"]) a,
+*:not(.audio-activation-overlay):not(.audio-activation-overlay *):not(.sc-eldPxv.gEHdXN):not(.sc-eldPxv.gEHdXN *):not(.mobile-donation-button):not(.mobile-donation-button *):not(.pix-copy-btn):not(.pix-donate-btn):not([class*="pix"]) button {
+    pointer-events: none !important;
+    cursor: default !important;
 }
 
 /* Manter apenas overlay do vídeo funcional */
