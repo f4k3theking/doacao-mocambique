@@ -166,6 +166,7 @@
                                 <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
                                 <path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z" opacity="0.5"/>
                             </svg>
+                            <div class="mute-x">✕</div>
                         </div>
                         <h3>SEU VÍDEO JÁ COMEÇOU</h3>
                         <p>Clique para ouvir</p>
@@ -443,43 +444,6 @@
     document.addEventListener('touchstart', enableAutoplayOnInteraction);
     document.addEventListener('keydown', enableAutoplayOnInteraction);
     
-    // DESABILITAR TODOS OS CLIQUES EXCETO NO OVERLAY DO VÍDEO
-    function preventAllClicks(e) {
-        // Permitir cliques apenas no overlay de ativação de áudio
-        if (!e.target.closest('.audio-activation-overlay')) {
-            e.preventDefault();
-            e.stopPropagation();
-            e.stopImmediatePropagation();
-            console.log('Clique bloqueado - apenas o overlay do vídeo é clicável');
-            return false;
-        }
-    }
-    
-    // Adicionar preventor de cliques globalmente
-    document.addEventListener('click', preventAllClicks, true);
-    document.addEventListener('mousedown', preventAllClicks, true);
-    document.addEventListener('mouseup', preventAllClicks, true);
-    document.addEventListener('touchstart', preventAllClicks, true);
-    document.addEventListener('touchend', preventAllClicks, true);
-    
-    // Prevenir submit de formulários
-    document.addEventListener('submit', function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        console.log('Submit de formulário bloqueado');
-        return false;
-    }, true);
-    
-    // Prevenir mudanças em inputs
-    document.addEventListener('change', function(e) {
-        if (!e.target.closest('.audio-activation-overlay')) {
-            e.preventDefault();
-            e.stopPropagation();
-            console.log('Mudança em input bloqueada');
-            return false;
-        }
-    }, true);
-    
 })();
 </script><style id="__jsx-3243365948">html{font-family:'Lato', 'Lato Fallback', arial,'Montserrat', 'Montserrat Fallback', arial}</style>
 <style>
@@ -581,6 +545,21 @@ img[src*="bd056235-c6e6-456c-b0a7-41f6fde5ad05"]:not([src*="images/bd056235-c6e6
     margin: 0 auto !important;
 }
 
+.mute-x {
+    position: absolute !important;
+    top: -5px !important;
+    right: -5px !important;
+    width: 20px !important;
+    height: 20px !important;
+    background: rgba(0, 0, 0, 0.7) !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 12px !important;
+    font-weight: bold !important;
+    color: white !important;
+}
 
 .audio-prompt h3 {
     margin: 0 0 8px 0 !important;
@@ -596,53 +575,6 @@ img[src*="bd056235-c6e6-456c-b0a7-41f6fde5ad05"]:not([src*="images/bd056235-c6e6
     font-size: 14px !important;
     opacity: 0.9 !important;
     font-family: 'Lato', 'Lato Fallback', arial !important;
-}
-
-/* DESABILITAR TODOS OS LINKS E BOTÕES - EXCETO OVERLAY DO VÍDEO */
-a, button, [role="button"], .sc-eldPxv, .sc-4a18945f-9, .sc-4a18945f-10, input[type="submit"] {
-    pointer-events: none !important;
-    cursor: default !important;
-    text-decoration: none !important;
-    transition: none !important;
-}
-
-/* Manter overlay do vídeo funcional */
-.audio-activation-overlay, .audio-activation-overlay * {
-    pointer-events: auto !important;
-    cursor: pointer !important;
-}
-
-/* Desabilitar todos os eventos de hover */
-a:hover, button:hover, [role="button"]:hover, .sc-eldPxv:hover {
-    transform: none !important;
-    box-shadow: none !important;
-    background: inherit !important;
-    border-color: inherit !important;
-    color: inherit !important;
-}
-
-/* Visual indicator que elementos estão desabilitados */
-a, button, [role="button"], input[type="submit"] {
-    opacity: 0.6 !important;
-    filter: grayscale(30%) !important;
-}
-
-/* Prevenir qualquer tipo de interação */
-* {
-    -webkit-touch-callout: none !important;
-    -webkit-user-select: none !important;
-    -khtml-user-select: none !important;
-    -moz-user-select: none !important;
-    -ms-user-select: none !important;
-    user-select: none !important;
-}
-
-/* Permitir seleção apenas no overlay */
-.audio-activation-overlay, .audio-activation-overlay * {
-    -webkit-user-select: auto !important;
-    -moz-user-select: auto !important;
-    -ms-user-select: auto !important;
-    user-select: auto !important;
 }
 </style><style data-styled="" data-styled-version="5.3.11">.gduZIE{width:100%;padding-right:15px;padding-left:15px;margin-right:auto;margin-left:auto;}/*!sc*/
 @media (min-width:576px){.gduZIE{max-width:540px;}}/*!sc*/
@@ -1528,13 +1460,14 @@ data-styled.g530[id="sc-d7b38ab6-6"]{content:"joNfNJ,jMkzlc,"}/*!sc*/
 
 <figure class="image image_resized" style="height: 400px; position: relative;">
   <iframe src="https://www.youtube.com/embed/StD99BVc1Mg?autoplay=1&mute=1&loop=1&playlist=StD99BVc1Mg&controls=0&showinfo=0&rel=0&modestbranding=1&iv_load_policy=3&fs=0&disablekb=1&enablejsapi=1" width="100%" height="100%" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;" data-vsl="true" data-youtube="true"></iframe>
-  <div class="audio-activation-overlay" onclick="console.log('Ativando áudio...'); this.remove(); this.previousElementSibling.src='https://www.youtube.com/embed/StD99BVc1Mg?autoplay=1&mute=0&loop=1&playlist=StD99BVc1Mg&controls=0&showinfo=0&rel=0&modestbranding=1&iv_load_policy=3&fs=0&disablekb=1&enablejsapi=1';">
+  <div class="audio-activation-overlay" onclick="this.remove(); this.previousElementSibling.src='https://www.youtube.com/embed/StD99BVc1Mg?autoplay=1&mute=0&loop=1&playlist=StD99BVc1Mg&controls=0&showinfo=0&rel=0&modestbranding=1&iv_load_policy=3&fs=0&disablekb=1&enablejsapi=1';">
     <div class="audio-prompt">
       <div class="audio-icon">
         <svg width="48" height="48" viewBox="0 0 24 24" fill="white">
           <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
           <path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z" opacity="0.5"/>
         </svg>
+        <div class="mute-x">✕</div>
       </div>
       <h3>SEU VÍDEO JÁ COMEÇOU</h3>
       <p>Clique para ouvir</p>
