@@ -4,6 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Doar - A Realidade em Moçambique</title>
+    
+    <!-- Meta Pixel Code -->
+    <script>
+    !function(f,b,e,v,n,t,s)
+    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+    n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];
+    s.parentNode.insertBefore(t,s)}(window, document,'script',
+    'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '1139656948048612');
+    fbq('track', 'PageView');
+    </script>
+    <noscript><img height="1" width="1" style="display:none"
+    src="https://www.facebook.com/tr?id=1139656948048612&ev=PageView&noscript=1"
+    /></noscript>
+    <!-- End Meta Pixel Code -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * {
@@ -248,20 +266,40 @@
             transform: none;
         }
 
+
         .security-info {
+            margin-top: 24px;
+        }
+
+        .mercado-pago-security {
             display: flex;
             align-items: center;
-            justify-content: center;
-            gap: 8px;
-            margin-top: 16px;
-            color: #6b7280;
+            gap: 12px;
+            padding: 16px;
+            background: #f0f9ff;
+            border: 1px solid #0ea5e9;
+            border-radius: 12px;
+        }
+
+        .mp-logo {
+            height: 32px;
+            width: auto;
+        }
+
+        .security-text {
+            flex: 1;
+        }
+
+        .security-title {
+            font-weight: 600;
+            color: #0c4a6e;
             font-size: 14px;
         }
 
-        .security-icon {
-            width: 16px;
-            height: 16px;
-            fill: currentColor;
+        .security-subtitle {
+            color: #0369a1;
+            font-size: 12px;
+            margin-top: 2px;
         }
 
         /* Modal PIX */
@@ -407,6 +445,23 @@
             .amount-grid {
                 grid-template-columns: 1fr;
             }
+
+            .mercado-pago-security {
+                padding: 12px;
+                gap: 8px;
+            }
+
+            .mp-logo {
+                height: 24px;
+            }
+
+            .security-title {
+                font-size: 12px;
+            }
+
+            .security-subtitle {
+                font-size: 10px;
+            }
         }
     </style>
 </head>
@@ -464,10 +519,13 @@
                 </button>
 
                 <div class="security-info">
-                    <svg class="security-icon" viewBox="0 0 16 16">
-                        <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zM3 7v4a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V7a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1z"/>
-                    </svg>
-                    Pagamento 100% seguro via PIX
+                    <div class="mercado-pago-security">
+                        <img src="checkout/mercado-pago-logo.png" alt="Mercado Pago" class="mp-logo">
+                        <div class="security-text">
+                            <div class="security-title">Transação segura</div>
+                            <div class="security-subtitle">Doação processada com proteção pelo Mercado Pago</div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -553,6 +611,17 @@
         async function generatePix(amount) {
             const btn = document.getElementById('donateBtn');
             const originalText = btn.textContent;
+            
+            // Rastrear evento de conversão no Facebook
+            if (typeof fbq !== 'undefined') {
+                fbq('track', 'Purchase', {
+                    content_name: 'Doação para Moçambique',
+                    content_category: 'Doação',
+                    value: amount,
+                    currency: 'BRL',
+                    payment_method: 'pix'
+                });
+            }
             
             btn.disabled = true;
             btn.textContent = 'Gerando PIX...';
