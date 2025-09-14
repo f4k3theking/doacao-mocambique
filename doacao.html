@@ -315,6 +315,84 @@
             backdrop-filter: blur(4px);
         }
 
+        /* Formulário de informações do usuário */
+        .user-info-form {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 24px;
+            margin: 24px 0;
+            border: 2px solid #e5e7eb;
+        }
+
+        .form-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        .form-subtitle {
+            color: #6b7280;
+            font-size: 14px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 500;
+            color: #374151;
+            margin-bottom: 6px;
+            font-size: 14px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.2s;
+            background: white;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #22c55e;
+            box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.1);
+        }
+
+        .form-input.error {
+            border-color: #ef4444;
+        }
+
+        .error-message {
+            color: #ef4444;
+            font-size: 12px;
+            margin-top: 4px;
+            display: none;
+        }
+
+        .privacy-notice {
+            background: #f0f9ff;
+            border: 1px solid #0ea5e9;
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 16px;
+        }
+
+        .privacy-text {
+            color: #0369a1;
+            font-size: 12px;
+            text-align: center;
+            line-height: 1.4;
+        }
+
         .modal {
             position: absolute;
             top: 50%;
@@ -618,6 +696,29 @@
             .highlight-text {
                 font-size: 12px;
             }
+
+            /* Responsivo para formulário de usuário */
+            .user-info-form {
+                padding: 16px;
+                margin: 16px 0;
+            }
+
+            .form-title {
+                font-size: 16px;
+            }
+
+            .form-subtitle {
+                font-size: 13px;
+            }
+
+            .form-input {
+                padding: 12px 14px;
+                font-size: 14px;
+            }
+
+            .privacy-text {
+                font-size: 11px;
+            }
         }
     </style>
 </head>
@@ -670,8 +771,32 @@
                     <input type="number" id="customAmount" class="amount-input" placeholder="R$ 0,00" min="1" step="0.01">
                 </div>
 
+                <!-- Formulário de informações do usuário -->
+                <div id="userInfoForm" class="user-info-form" style="display: none;">
+                    <h3 class="form-title">Suas informações</h3>
+                    <p class="form-subtitle">Para melhor acompanhamento da sua doação</p>
+                    
+                    <div class="form-group">
+                        <label for="userName" class="form-label">Nome completo *</label>
+                        <input type="text" id="userName" class="form-input" placeholder="Digite seu nome completo">
+                        <div id="nameError" class="error-message">Por favor, digite seu nome</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="userEmail" class="form-label">E-mail *</label>
+                        <input type="email" id="userEmail" class="form-input" placeholder="Digite seu e-mail">
+                        <div id="emailError" class="error-message">Por favor, digite um e-mail válido</div>
+                    </div>
+                    
+                    <div class="privacy-notice">
+                        <p class="privacy-text">
+                            🔒 Seus dados são utilizados apenas para identificação da doação e não são compartilhados com terceiros.
+                        </p>
+                    </div>
+                </div>
+
                 <button id="donateBtn" class="donate-btn" disabled>
-                    Continuar com PIX
+                    Escolher valor
                 </button>
 
                 <div class="security-info">
@@ -762,6 +887,8 @@
 
     <script>
         let selectedAmount = 0;
+        let userInfo = { name: '', email: '' };
+        let currentStep = 'amount'; // 'amount' ou 'user_info'
 
         // Seleção de valores predefinidos
         document.querySelectorAll('.amount-btn').forEach(btn => {
@@ -792,25 +919,92 @@
             updateDonateButton();
         });
 
+        // Validação em tempo real dos campos
+        document.getElementById('userName').addEventListener('input', validateUserForm);
+        document.getElementById('userEmail').addEventListener('input', validateUserForm);
+
         function updateDonateButton() {
             const btn = document.getElementById('donateBtn');
-            if (selectedAmount > 0) {
-                btn.disabled = false;
-                btn.textContent = `Doar R$ ${selectedAmount.toFixed(2).replace('.', ',')}`;
-            } else {
-                btn.disabled = true;
-                btn.textContent = 'Continuar com PIX';
+            
+            if (currentStep === 'amount') {
+                if (selectedAmount > 0) {
+                    btn.disabled = false;
+                    btn.textContent = 'Continuar';
+                } else {
+                    btn.disabled = true;
+                    btn.textContent = 'Escolher valor';
+                }
+            } else if (currentStep === 'user_info') {
+                if (userInfo.name && userInfo.email && isValidEmail(userInfo.email)) {
+                    btn.disabled = false;
+                    btn.textContent = `Gerar PIX - R$ ${selectedAmount.toFixed(2).replace('.', ',')}`;
+                } else {
+                    btn.disabled = true;
+                    btn.textContent = 'Preencher informações';
+                }
             }
+        }
+
+        function validateUserForm() {
+            const nameInput = document.getElementById('userName');
+            const emailInput = document.getElementById('userEmail');
+            const nameError = document.getElementById('nameError');
+            const emailError = document.getElementById('emailError');
+            
+            // Validar nome
+            const name = nameInput.value.trim();
+            if (name.length < 2) {
+                nameInput.classList.add('error');
+                nameError.style.display = 'block';
+                userInfo.name = '';
+            } else {
+                nameInput.classList.remove('error');
+                nameError.style.display = 'none';
+                userInfo.name = name;
+            }
+            
+            // Validar email
+            const email = emailInput.value.trim();
+            if (!isValidEmail(email)) {
+                emailInput.classList.add('error');
+                emailError.style.display = 'block';
+                userInfo.email = '';
+            } else {
+                emailInput.classList.remove('error');
+                emailError.style.display = 'none';
+                userInfo.email = email;
+            }
+            
+            updateDonateButton();
+        }
+
+        function isValidEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email) && email.length > 5;
+        }
+
+        function showUserInfoForm() {
+            currentStep = 'user_info';
+            document.getElementById('userInfoForm').style.display = 'block';
+            updateDonateButton();
+            
+            // Scroll suave para o formulário
+            document.getElementById('userInfoForm').scrollIntoView({ 
+                behavior: 'smooth', 
+                block: 'center' 
+            });
         }
 
         // Botão de doação
         document.getElementById('donateBtn').addEventListener('click', () => {
-            if (selectedAmount > 0) {
-                generatePix(selectedAmount);
+            if (currentStep === 'amount' && selectedAmount > 0) {
+                showUserInfoForm();
+            } else if (currentStep === 'user_info' && userInfo.name && userInfo.email && isValidEmail(userInfo.email)) {
+                generatePix(selectedAmount, userInfo);
             }
         });
 
-        async function generatePix(amount) {
+        async function generatePix(amount, userInfo) {
             const btn = document.getElementById('donateBtn');
             const originalText = btn.textContent;
             
@@ -829,12 +1023,24 @@
             btn.textContent = 'Gerando PIX...';
             
             try {
+                const pixData = {
+                    amount: amount,
+                    payer: {
+                        name: userInfo.name,
+                        email: userInfo.email
+                    },
+                    description: `Doação para Moçambique - ${userInfo.name}`,
+                    external_reference: `doacao_${Date.now()}_${userInfo.email.replace('@', '_')}`
+                };
+
+                console.log('Enviando dados para PIX:', pixData);
+
                 const response = await fetch('/.netlify/functions/pix', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ amount: amount })
+                    body: JSON.stringify(pixData)
                 });
 
                 const data = await response.json();
