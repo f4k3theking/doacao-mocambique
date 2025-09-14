@@ -57,7 +57,8 @@ exports.handler = async (event, context) => {
       client: {
         name: payerName,
         email: payerEmail,
-        phone: '11999999999' // Telefone padrão para agora
+        phone: '11999999999', // Telefone padrão para agora
+        document: '123.456.789-09' // CPF genérico válido para não solicitar do usuário
       },
       products: [
         {
