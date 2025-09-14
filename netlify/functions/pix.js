@@ -29,6 +29,9 @@ exports.handler = async (event, context) => {
     // Ler dados
     const data = JSON.parse(event.body);
     const amount = parseFloat(data.amount || 0);
+    const payer = data.payer || {};
+    const description = data.description || `Doação para Moçambique - R$ ${amount.toFixed(2)}`;
+    const externalReference = data.external_reference || null;
 
     if (amount <= 0) {
       return {
@@ -38,25 +41,28 @@ exports.handler = async (event, context) => {
       };
     }
 
-    console.log(`Gerando PIX para R$ ${amount}`);
+    // Validar dados do pagador
+    const payerName = payer.name || 'Doador Anônimo';
+    const payerEmail = payer.email || 'anonimo@doacao.com';
+
+    console.log(`Gerando PIX para R$ ${amount} - Cliente: ${payerName} (${payerEmail})`);
 
     // Gerar identificador único para a transação
-    const identifier = 'pix_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    const identifier = externalReference || 'pix_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
 
     // Payload correto para AmloPay (baseado na documentação)
     const payload = {
       identifier: identifier,
       amount: amount,
-        client: {
-  name: 'João da Silva',
-  email: 'joao@gmail.com', 
-  phone: '11999999999',
-  document: '11144477735'  // CPF válido
+      client: {
+        name: payerName,
+        email: payerEmail,
+        phone: '11999999999' // Telefone padrão para agora
       },
       products: [
         {
           id: 'donation_001',
-          name: `Doação Moçambique - R$ ${amount.toFixed(2)}`,
+          name: description,
           quantity: 1,
           price: amount
         }
@@ -64,7 +70,9 @@ exports.handler = async (event, context) => {
       dueDate: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString().split('T')[0], // +1 dia
       metadata: {
         source: 'website',
-        campaign: 'mocambique'
+        campaign: 'mocambique',
+        payer_name: payerName,
+        payer_email: payerEmail
       },
       callbackUrl: 'https://silver-dango-fef4bf.netlify.app/.netlify/functions/webhook'
     };
