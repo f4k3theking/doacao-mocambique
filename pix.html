@@ -22,15 +22,14 @@ exports.handler = async (event, context) => {
   }
 
   try {
-    // Novas credenciais da API PIX
-    const publicKey = '55f2ede1-41a3-4b7c-b50b-1bf45ddf353d';
-    const secretKey = '963985ef-8feb-43dd-8227-32b991ffde0f';
+    // Suas credenciais AmloPay
+    const publicKey = 'murillot2004_f443f52tx77685f5';
+    const secretKey = '5gu5mbg909m53xs9cph9kb08dftavp2zyuzq7j05cm1uf20cuykqrxeq00dpprce';
 
     // Ler dados
     const data = JSON.parse(event.body);
     const amount = parseFloat(data.amount || 0);
     const payer = data.payer || {};
-    const description = data.description || `Doação para Moçambique - R$ ${amount.toFixed(2)}`;
     const externalReference = data.external_reference || null;
 
     if (amount <= 0) {
@@ -44,40 +43,45 @@ exports.handler = async (event, context) => {
     // Validar dados do pagador
     const payerName = payer.name || 'Doador Anônimo';
     const payerEmail = payer.email || 'anonimo@doacao.com';
+    const description = data.description || `Doação de ${payerName} - R$ ${amount.toFixed(2)}`;
 
     console.log(`Gerando PIX para R$ ${amount} - Cliente: ${payerName} (${payerEmail})`);
 
-    // Converter valor para centavos (a nova API trabalha em centavos)
-    const amountInCents = Math.round(amount * 100);
-
     // Gerar identificador único para a transação
-    const identifier = externalReference || 'doacao_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    const identifier = externalReference || 'pix_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
 
-    // Payload correto para nova API PIX
+    // Payload correto para AmloPay (baseado na documentação)
     const payload = {
-      name: payerName,
-      email: payerEmail,
-      cpf: '12345678901', // CPF genérico válido (11 dígitos sem formatação)
-      phone: '16999999999', // Telefone padrão (formato necessário: 8-12 dígitos)
-      paymentMethod: 'PIX',
-      amount: amountInCents,
-      traceable: true,
-      externalId: identifier,
-      postbackUrl: 'https://silver-dango-fef4bf.netlify.app/.netlify/functions/webhook',
-      items: [
-        {
-          unitPrice: amountInCents,
-          title: description,
-          quantity: 1,
-          tangible: false
-        }
-      ]
+      identifier: identifier,
+      amount: amount,
+      client: {
+        name: payerName,
+        email: payerEmail,
+        phone: '11999999999', // Telefone padrão para agora
+        document: '123.456.789-09' // CPF genérico válido para não solicitar do usuário
+      },
+       products: [
+         {
+           id: 'donation_001',
+           name: `Doação de ${payerName} - R$ ${amount.toFixed(2)}`,
+           quantity: 1,
+           price: amount
+         }
+       ],
+      dueDate: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString().split('T')[0], // +1 dia
+      metadata: {
+        source: 'website',
+        campaign: 'mocambique',
+        payer_name: payerName,
+        payer_email: payerEmail
+      },
+      callbackUrl: 'https://silver-dango-fef4bf.netlify.app/.netlify/functions/webhook'
     };
 
     console.log('Payload:', JSON.stringify(payload, null, 2));
 
-    // Endpoint da nova API PIX
-    const endpoint = 'https://app.ghostspaysv1.com/api/v1/transaction.purchase';
+    // Endpoint correto da AmloPay
+    const endpoint = 'https://app.amplopay.com/api/v1/gateway/pix/receive';
 
     try {
       console.log(`Chamando: ${endpoint}`);
@@ -86,7 +90,9 @@ exports.handler = async (event, context) => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': secretKey
+          'Accept': 'application/json',
+          'x-public-key': publicKey,
+          'x-secret-key': secretKey
         },
         body: JSON.stringify(payload)
       });
@@ -97,19 +103,21 @@ exports.handler = async (event, context) => {
         const result = await response.json();
         console.log('✅ SUCESSO!', JSON.stringify(result, null, 2));
         
+        // Extrair dados do PIX da resposta
+        const pixData = result.pix || {};
+        
         return {
           statusCode: 200,
           headers,
           body: JSON.stringify({
             success: true,
-            payment_id: result.id,
-            transaction_id: result.transactionId,
+            payment_id: result.transactionId,
             amount: amount,
-            pix_qr_code: result.pixQrCode,
-            pix_code: result.pixCode,
+            pix_qr_code: pixData.image,
+            pix_code: pixData.code,
             status: result.status,
-            expires_at: result.expiresAt,
-            message: 'PIX gerado com sucesso!'
+            message: 'PIX gerado com sucesso!',
+            order_url: result.order?.url
           })
         };
       } else {
