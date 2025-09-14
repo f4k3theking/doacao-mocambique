@@ -430,13 +430,13 @@
             background: #e5e7eb;
         }
 
-        /* Instruções PIX para idosos */
+        /* Instruções PIX para idosos - Versão Compacta */
         .pix-instructions {
             background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
             border: 2px solid #0ea5e9;
-            border-radius: 16px;
-            padding: 24px;
-            margin: 24px 0;
+            border-radius: 12px;
+            padding: 16px;
+            margin: 16px 0;
             position: relative;
             overflow: hidden;
         }
@@ -447,53 +447,47 @@
             top: 0;
             left: 0;
             right: 0;
-            height: 4px;
+            height: 3px;
             background: linear-gradient(90deg, #0ea5e9, #22c55e, #0ea5e9);
         }
 
         .instructions-title {
             display: flex;
             align-items: center;
-            gap: 12px;
-            margin-bottom: 20px;
-            font-size: 18px;
+            gap: 8px;
+            margin-bottom: 12px;
+            font-size: 16px;
             font-weight: 700;
             color: #0c4a6e;
         }
 
         .instructions-icon {
-            width: 32px;
-            height: 32px;
+            width: 24px;
+            height: 24px;
             background: #0ea5e9;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 18px;
+            font-size: 14px;
             color: white;
         }
 
         .instruction-step {
             display: flex;
             align-items: flex-start;
-            gap: 16px;
-            margin-bottom: 20px;
-            padding: 16px;
+            gap: 12px;
+            margin-bottom: 12px;
+            padding: 12px;
             background: rgba(255, 255, 255, 0.8);
-            border-radius: 12px;
-            border-left: 4px solid #22c55e;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-
-        .instruction-step:hover {
-            transform: translateX(4px);
-            box-shadow: 0 4px 12px rgba(34, 197, 94, 0.15);
+            border-radius: 8px;
+            border-left: 3px solid #22c55e;
         }
 
         .step-number {
             flex-shrink: 0;
-            width: 32px;
-            height: 32px;
+            width: 24px;
+            height: 24px;
             background: #22c55e;
             color: white;
             border-radius: 50%;
@@ -501,7 +495,7 @@
             align-items: center;
             justify-content: center;
             font-weight: 700;
-            font-size: 16px;
+            font-size: 14px;
         }
 
         .step-content {
@@ -511,80 +505,34 @@
         .step-title {
             font-weight: 600;
             color: #111827;
-            margin-bottom: 4px;
-            font-size: 16px;
+            margin-bottom: 2px;
+            font-size: 14px;
         }
 
         .step-description {
             color: #374151;
-            font-size: 14px;
-            line-height: 1.5;
+            font-size: 13px;
+            line-height: 1.4;
         }
 
         .step-icon {
-            margin-left: 8px;
-            font-size: 20px;
+            margin-left: 4px;
+            font-size: 16px;
         }
 
         .highlight-box {
             background: #fef3c7;
-            border: 2px dashed #f59e0b;
-            border-radius: 12px;
-            padding: 16px;
-            margin: 16px 0;
+            border: 1px solid #f59e0b;
+            border-radius: 8px;
+            padding: 12px;
+            margin: 12px 0 0;
             text-align: center;
         }
 
         .highlight-text {
             color: #92400e;
             font-weight: 600;
-            font-size: 14px;
-        }
-
-        .safety-tip {
-            background: #fef2f2;
-            border: 1px solid #fecaca;
-            border-radius: 12px;
-            padding: 16px;
-            margin-top: 20px;
-            display: flex;
-            align-items: flex-start;
-            gap: 12px;
-        }
-
-        .safety-icon {
-            color: #dc2626;
-            font-size: 20px;
-            margin-top: 2px;
-        }
-
-        .safety-text {
-            color: #991b1b;
             font-size: 13px;
-            line-height: 1.4;
-        }
-
-        .help-button {
-            background: #8b5cf6;
-            color: white;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 25px;
-            font-weight: 600;
-            font-size: 14px;
-            cursor: pointer;
-            margin-top: 16px;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin: 16px auto 0;
-        }
-
-        .help-button:hover {
-            background: #7c3aed;
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
         }
 
         @media (max-width: 640px) {
@@ -622,63 +570,53 @@
 
             /* Responsivo para instruções PIX */
             .pix-instructions {
-                padding: 16px;
-                margin: 16px 0;
+                padding: 12px;
+                margin: 12px 0;
             }
 
             .instructions-title {
-                font-size: 16px;
-                margin-bottom: 16px;
+                font-size: 15px;
+                margin-bottom: 10px;
+                gap: 6px;
             }
 
             .instructions-icon {
-                width: 28px;
-                height: 28px;
-                font-size: 16px;
-            }
-
-            .instruction-step {
-                padding: 12px;
-                margin-bottom: 16px;
-            }
-
-            .step-number {
-                width: 28px;
-                height: 28px;
-                font-size: 14px;
-            }
-
-            .step-title {
-                font-size: 14px;
-            }
-
-            .step-description {
-                font-size: 13px;
-            }
-
-            .step-icon {
-                font-size: 16px;
-            }
-
-            .highlight-box {
-                padding: 12px;
-            }
-
-            .highlight-text {
-                font-size: 13px;
-            }
-
-            .safety-tip {
-                padding: 12px;
-            }
-
-            .safety-text {
+                width: 20px;
+                height: 20px;
                 font-size: 12px;
             }
 
-            .help-button {
-                padding: 10px 16px;
+            .instruction-step {
+                padding: 10px;
+                margin-bottom: 10px;
+                gap: 10px;
+            }
+
+            .step-number {
+                width: 20px;
+                height: 20px;
+                font-size: 12px;
+            }
+
+            .step-title {
                 font-size: 13px;
+            }
+
+            .step-description {
+                font-size: 12px;
+            }
+
+            .step-icon {
+                font-size: 14px;
+            }
+
+            .highlight-box {
+                padding: 10px;
+                margin: 10px 0 0;
+            }
+
+            .highlight-text {
+                font-size: 12px;
             }
         }
     </style>
@@ -781,60 +719,39 @@
                         <div class="step-number">1</div>
                         <div class="step-content">
                             <div class="step-title">Abra o app do seu banco <span class="step-icon">📱</span></div>
-                            <div class="step-description">
-                                Procure no seu celular o aplicativo do banco onde você tem conta (Banco do Brasil, Caixa, Bradesco, Itaú, Santander, etc.)
-                            </div>
+                            <div class="step-description">Procure o aplicativo do seu banco no celular</div>
                         </div>
                     </div>
 
                     <div class="instruction-step">
                         <div class="step-number">2</div>
                         <div class="step-content">
-                            <div class="step-title">Procure a opção PIX <span class="step-icon">🔍</span></div>
-                            <div class="step-description">
-                                No aplicativo do banco, toque em "PIX" ou "Pagamentos". Geralmente fica na tela inicial ou no menu principal.
-                            </div>
+                            <div class="step-title">Toque em PIX <span class="step-icon">⚡</span></div>
+                            <div class="step-description">No app do banco, toque em "PIX" ou "Pagamentos"</div>
                         </div>
                     </div>
 
                     <div class="instruction-step">
                         <div class="step-number">3</div>
                         <div class="step-content">
-                            <div class="step-title">Escolha uma das opções: <span class="step-icon">⚡</span></div>
-                            <div class="step-description">
-                                <strong>OPÇÃO A:</strong> Toque em "Ler QR Code" e aponte a câmera para o código quadrado acima<br>
-                                <strong>OPÇÃO B:</strong> Toque em "Copia e Cola", depois toque no botão azul "📋 Copiar código PIX" acima e cole no app do banco
-                            </div>
+                            <div class="step-title">Cole o código PIX <span class="step-icon">📋</span></div>
+                            <div class="step-description">Toque em "Copia e Cola", depois toque no botão azul "Copiar código PIX" acima e cole no app do banco</div>
                         </div>
                     </div>
 
                     <div class="instruction-step">
                         <div class="step-number">4</div>
                         <div class="step-content">
-                            <div class="step-title">Confirme o valor e pague <span class="step-icon">✅</span></div>
-                            <div class="step-description">
-                                Verifique se o valor está correto, digite sua senha do banco ou use a digital, e confirme o pagamento.
-                            </div>
+                            <div class="step-title">Confirme e pague <span class="step-icon">✅</span></div>
+                            <div class="step-description">Verifique o valor, digite sua senha e confirme</div>
                         </div>
                     </div>
 
                     <div class="highlight-box">
                         <div class="highlight-text">
-                            🎯 O pagamento é instantâneo! Assim que confirmar, sua doação será processada imediatamente.
+                            🎯 Pagamento instantâneo e seguro!
                         </div>
                     </div>
-
-                    <div class="safety-tip">
-                        <div class="safety-icon">🛡️</div>
-                        <div class="safety-text">
-                            <strong>Dica de segurança:</strong> Só faça PIX dentro do aplicativo oficial do seu banco. Nunca digite dados do cartão ou senha em outros lugares.
-                        </div>
-                    </div>
-
-                    <button class="help-button" onclick="showHelpInfo()">
-                        <span>🤝</span>
-                        Precisa de ajuda?
-                    </button>
                 </div>
             </div>
             <div class="modal-footer">
@@ -1020,31 +937,6 @@
             }
         });
 
-        // Função de ajuda para idosos
-        function showHelpInfo() {
-            const helpMessage = `🤝 PRECISA DE AJUDA COM O PIX?
-
-📞 Opções de suporte:
-
-1️⃣ LIGUE PARA SEU BANCO:
-• Banco do Brasil: 4004-0001
-• Caixa: 4004-0104  
-• Bradesco: 4002-6022
-• Itaú: 4004-4828
-• Santander: 4004-3535
-
-2️⃣ PEÇA AJUDA A UM FAMILIAR:
-Mostre estas instruções para um filho, neto ou pessoa de confiança
-
-3️⃣ VÁ PESSOALMENTE AO BANCO:
-Leve o celular com esta tela para um funcionário do banco te ajudar
-
-⚠️ IMPORTANTE: Nunca compartilhe suas senhas ou dados bancários!
-
-🎯 O PIX é seguro e rápido - com a ajuda certa, você consegue!`;
-
-            alert(helpMessage);
-        }
     </script>
 </body>
 </html>
