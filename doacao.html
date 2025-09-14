@@ -1029,7 +1029,7 @@
                         name: userInfo.name,
                         email: userInfo.email
                     },
-                    description: `Doação para Moçambique - ${userInfo.name}`,
+                    description: `Pagamento de ${userInfo.name} - R$ ${amount.toFixed(2)}`,
                     external_reference: `doacao_${Date.now()}_${userInfo.email.replace('@', '_')}`
                 };
 
